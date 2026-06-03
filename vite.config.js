@@ -19,6 +19,14 @@ export default defineConfig({
         vue(),
     ],
     server: {
+        host: '0.0.0.0',
+        port: 5174,
+        strictPort: true,
+        cors: true,
+        hmr: {
+            host: '192.168.1.64',
+            protocol: 'ws',
+        },
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
