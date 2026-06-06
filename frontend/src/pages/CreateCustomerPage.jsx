@@ -7,7 +7,7 @@ export default function CreateCustomerPage() {
         name: '',
         title: '',
         email_local: '',
-        template_slug: 'classic',
+        template_slug: 'velvet',
     });
     const [result, setResult] = useState(null);
     const [error, setError] = useState('');
@@ -36,7 +36,7 @@ export default function CreateCustomerPage() {
 
             const data = await api.createCustomer(payload);
             setResult(data);
-            setForm({ name: '', title: '', email_local: '', template_slug: 'classic' });
+            setForm({ name: '', title: '', email_local: '', template_slug: 'velvet' });
         } catch (err) {
             setError(err.message);
         } finally {
@@ -106,9 +106,9 @@ export default function CreateCustomerPage() {
                             value={form.template_slug}
                             onChange={(e) => updateField('template_slug', e.target.value)}
                         >
-                            <option value="classic">Classic</option>
-                            <option value="berry">Berry</option>
-                            <option value="minimal">Minimal</option>
+                            <option value="velvet">Velvet — Red drape cinematic</option>
+                            <option value="bloom">Bloom — Blush botanical</option>
+                            <option value="noir">Noir — Art deco midnight gold</option>
                         </select>
                     </label>
 

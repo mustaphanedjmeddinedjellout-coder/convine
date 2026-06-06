@@ -12,12 +12,16 @@ class Wedding extends Model
         'user_id',
         'created_by',
         'title',
+        'slug',
         'bride_name',
         'groom_name',
         'event_date',
+        'event_time',
         'venue',
+        'venue_address',
         'template_slug',
         'message',
+        'photos',
         'status',
     ];
 
@@ -25,6 +29,7 @@ class Wedding extends Model
     {
         return [
             'event_date' => 'date',
+            'photos' => 'array',
         ];
     }
 

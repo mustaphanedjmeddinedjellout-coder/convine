@@ -8,12 +8,14 @@ import AdminDashboard from './pages/AdminDashboard.jsx';
 import CreateCustomerPage from './pages/CreateCustomerPage.jsx';
 import CustomerDashboard from './pages/CustomerDashboard.jsx';
 import LoginPage from './pages/LoginPage.jsx';
+import InvitationPage from './pages/InvitationPage.jsx';
 
 createRoot(document.getElementById('app')).render(
     <AuthProvider>
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<LandingPage />} />
+                <Route path="/invite/:token" element={<InvitationPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route
                     path="/admin"

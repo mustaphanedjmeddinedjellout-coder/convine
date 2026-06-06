@@ -32,7 +32,7 @@ class CustomerProvisioner
                 'user_id' => $customer->id,
                 'created_by' => $admin->id,
                 'title' => $data['title'],
-                'template_slug' => $data['template_slug'] ?? 'classic',
+                'template_slug' => $data['template_slug'] ?? 'velvet',
                 'status' => 'draft',
             ]);
 

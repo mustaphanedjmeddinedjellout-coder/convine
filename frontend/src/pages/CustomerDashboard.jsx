@@ -1,11 +1,21 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../lib/api';
+
+function inviteLink(token) {
+    if (!token) {
+        return null;
+    }
+
+    return `${window.location.origin}/invite/${token}`;
+}
 
 export default function CustomerDashboard() {
     const { user, logout } = useAuth();
     const [wedding, setWedding] = useState(null);
     const [guestText, setGuestText] = useState('');
+    const [photoText, setPhotoText] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [guestSaving, setGuestSaving] = useState(false);
@@ -17,6 +27,7 @@ export default function CustomerDashboard() {
             .then((data) => {
                 setWedding(data.wedding);
                 setGuestText(data.wedding.guests.map((guest) => guest.name).join('\n'));
+                setPhotoText((data.wedding.photos ?? []).join('\n'));
             })
             .catch((err) => setError(err.message))
             .finally(() => setLoading(false));
@@ -28,15 +39,25 @@ export default function CustomerDashboard() {
         setMessage('');
         setError('');
 
+        const photos = photoText
+            .split('\n')
+            .map((line) => line.trim())
+            .filter(Boolean)
+            .slice(0, 6);
+
         try {
             const data = await api.updateWedding({
                 bride_name: wedding.bride_name,
                 groom_name: wedding.groom_name,
                 event_date: wedding.event_date || null,
+                event_time: wedding.event_time,
                 venue: wedding.venue,
+                venue_address: wedding.venue_address,
                 message: wedding.message,
+                photos,
             });
             setWedding(data.wedding);
+            setPhotoText((data.wedding.photos ?? []).join('\n'));
             setMessage('Invitation details saved.');
         } catch (err) {
             setError(err.message);
@@ -60,7 +81,7 @@ export default function CustomerDashboard() {
             const data = await api.syncGuests(names);
             setWedding((current) => ({ ...current, guests: data.guests }));
             setGuestText(data.guests.map((guest) => guest.name).join('\n'));
-            setMessage(`${data.guests.length} guest names saved. Each person gets a personalized invitation.`);
+            setMessage(`${data.guests.length} guest links ready. Share each personalized link via WhatsApp.`);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -94,8 +115,12 @@ export default function CustomerDashboard() {
                 <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-normal">{wedding.title}</h1>
+                        <p className="mt-1 text-sm text-black/50">Manage your cinematic wedding invitation</p>
                     </div>
                     <div className="flex items-center gap-3">
+                        <Link className="auth-button auth-button-outline text-sm" to="/invite/demo" target="_blank">
+                            Preview demo
+                        </Link>
                         <span className="hidden text-sm text-black/60 sm:inline">{user.email}</span>
                         <button className="auth-button auth-button-outline" onClick={logout}>
                             Log out
@@ -106,8 +131,10 @@ export default function CustomerDashboard() {
 
             <main className="mx-auto grid max-w-5xl gap-8 px-6 py-10 lg:grid-cols-2">
                 <section className="border border-black/10 bg-white p-6">
-                    <h2 className="text-2xl font-normal">Customize invitation</h2>
-                    <p className="mt-2 text-sm text-black/60">Template: {wedding.template_slug}</p>
+                    <h2 className="text-2xl font-normal">Invitation details</h2>
+                    <p className="mt-2 text-sm text-black/60">
+                        These details power the guest experience — drape opening, names, date reveal, letter, and more.
+                    </p>
 
                     <form className="mt-6 space-y-4" onSubmit={saveWedding}>
                         <label className="block">
@@ -128,18 +155,30 @@ export default function CustomerDashboard() {
                             />
                         </label>
 
-                        <label className="block">
-                            <span className="form-label">Date</span>
-                            <input
-                                className="mt-2 w-full border border-black/15 px-4 py-3 outline-none focus:border-black"
-                                type="date"
-                                value={wedding.event_date ?? ''}
-                                onChange={(e) => updateWeddingField('event_date', e.target.value)}
-                            />
-                        </label>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                            <label className="block">
+                                <span className="form-label">Date</span>
+                                <input
+                                    className="mt-2 w-full border border-black/15 px-4 py-3 outline-none focus:border-black"
+                                    type="date"
+                                    value={wedding.event_date ?? ''}
+                                    onChange={(e) => updateWeddingField('event_date', e.target.value)}
+                                />
+                            </label>
+
+                            <label className="block">
+                                <span className="form-label">Time (24h)</span>
+                                <input
+                                    className="mt-2 w-full border border-black/15 px-4 py-3 outline-none focus:border-black"
+                                    type="time"
+                                    value={wedding.event_time ?? ''}
+                                    onChange={(e) => updateWeddingField('event_time', e.target.value)}
+                                />
+                            </label>
+                        </div>
 
                         <label className="block">
-                            <span className="form-label">Venue</span>
+                            <span className="form-label">Venue name</span>
                             <input
                                 className="mt-2 w-full border border-black/15 px-4 py-3 outline-none focus:border-black"
                                 value={wedding.venue ?? ''}
@@ -148,11 +187,32 @@ export default function CustomerDashboard() {
                         </label>
 
                         <label className="block">
-                            <span className="form-label">Message</span>
+                            <span className="form-label">Venue address</span>
+                            <input
+                                className="mt-2 w-full border border-black/15 px-4 py-3 outline-none focus:border-black"
+                                value={wedding.venue_address ?? ''}
+                                onChange={(e) => updateWeddingField('venue_address', e.target.value)}
+                                placeholder="12 Avenue des Roses, Paris"
+                            />
+                        </label>
+
+                        <label className="block">
+                            <span className="form-label">Invitation message</span>
                             <textarea
                                 className="mt-2 min-h-28 w-full border border-black/15 px-4 py-3 outline-none focus:border-black"
                                 value={wedding.message ?? ''}
                                 onChange={(e) => updateWeddingField('message', e.target.value)}
+                                placeholder="We are delighted to invite you to celebrate our wedding..."
+                            />
+                        </label>
+
+                        <label className="block">
+                            <span className="form-label">Photo URLs (one per line, up to 6)</span>
+                            <textarea
+                                className="mt-2 min-h-24 w-full border border-black/15 px-4 py-3 font-mono text-sm outline-none focus:border-black"
+                                value={photoText}
+                                onChange={(e) => setPhotoText(e.target.value)}
+                                placeholder="https://..."
                             />
                         </label>
 
@@ -163,9 +223,9 @@ export default function CustomerDashboard() {
                 </section>
 
                 <section className="border border-black/10 bg-white p-6">
-                    <h2 className="text-2xl font-normal">Guest names</h2>
+                    <h2 className="text-2xl font-normal">Guest links</h2>
                     <p className="mt-2 text-base leading-7 text-black/60">
-                        Add one name per line. Each guest gets a personalized invitation — for example Mohamed, Fatima, Karim, Nadia.
+                        Add one name per line. Each guest receives a unique link with their name in the invitation letter.
                     </p>
 
                     <form className="mt-6 space-y-4" onSubmit={saveGuests}>
@@ -183,13 +243,34 @@ export default function CustomerDashboard() {
 
                     {wedding.guests?.length ? (
                         <div className="mt-6 border-t border-black/10 pt-6">
-                            <h3 className="text-lg font-medium">How it reads to each guest</h3>
-                            <ul className="mt-3 space-y-2">
-                                {wedding.guests.map((guest) => (
-                                    <li key={guest.id} className="rounded border border-black/10 px-4 py-3">
-                                        Dear <strong>{guest.name}</strong>, you are invited to {wedding.title}.
-                                    </li>
-                                ))}
+                            <h3 className="text-lg font-medium">Personalized links</h3>
+                            <ul className="mt-3 space-y-3">
+                                {wedding.guests.map((guest) => {
+                                    const link = inviteLink(guest.token);
+
+                                    return (
+                                        <li key={guest.id} className="rounded border border-black/10 px-4 py-3">
+                                            <p className="font-medium">{guest.name}</p>
+                                            {link ? (
+                                                <a
+                                                    className="mt-1 block truncate text-sm text-[#0065c8] hover:underline"
+                                                    href={link}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                >
+                                                    {link}
+                                                </a>
+                                            ) : (
+                                                <p className="mt-1 text-sm text-black/50">Re-save guests to generate link</p>
+                                            )}
+                                            {guest.rsvp_status && (
+                                                <p className="mt-1 text-xs uppercase tracking-wider text-black/40">
+                                                    RSVP: {guest.rsvp_status}
+                                                </p>
+                                            )}
+                                        </li>
+                                    );
+                                })}
                             </ul>
                         </div>
                     ) : null}

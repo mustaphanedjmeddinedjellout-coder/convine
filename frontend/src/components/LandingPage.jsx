@@ -1,13 +1,17 @@
 import { useCallback, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 import SiteHeader, { readSaved, SAVED_KEY } from './SiteHeader.jsx';
+import TemplateDemoSection from './TemplateDemoSection.jsx';
+import { VELVET_TEMPLATE } from '../lib/templates';
 import heroVideo from '../../assets/hero-web-landscape.mp4';
 
 const categories = [
     {
         name: 'Wedding',
-        copy: 'Save the dates, invitations, and wedding weekend details.',
-        preview: '#d9cfc3',
+        copy: 'Cinematic Velvet invitations with drape openings, date reveals, and RSVP.',
+        preview: '#6b0f1a',
+        demoPath: VELVET_TEMPLATE.demoPath,
     },
     {
         name: 'Birthday',
@@ -29,7 +33,7 @@ const categories = [
 const products = [
     {
         title: 'Card invitations',
-        copy: 'Digital invitations with envelopes, liners, RSVP tracking, guest lists, and delivery reminders.',
+        copy: 'Cinematic wedding stories with red drape openings, scratch-to-reveal dates, RSVP, and personalized guest links.',
     },
     {
         title: 'Flyer event pages',
@@ -129,9 +133,14 @@ export default function LandingPage() {
                             Online invitations and cards for all the moments that matter
                         </h1>
 
-                        <a href="#categories" className="hero-cta">
-                            Get started
-                        </a>
+                        <div className="hero-cta-group">
+                            <Link to={VELVET_TEMPLATE.demoPath} className="hero-cta hero-cta--primary">
+                                Try live demo
+                            </Link>
+                            <a href="#categories" className="hero-cta hero-cta--secondary">
+                                Get started
+                            </a>
+                        </div>
                     </div>
 
                     <button className="hero-arrow">
@@ -139,6 +148,8 @@ export default function LandingPage() {
                     </button>
                 </div>
             </section>
+
+            <TemplateDemoSection />
 
             <section id="categories" className="celebrate-section">
                 <div className="celebrate-section-inner">
@@ -162,7 +173,7 @@ export default function LandingPage() {
                                 No categories match your search. Try wedding, birthday, dinner, or baby.
                             </p>
                         ) : (
-                            visibleCategories.map(({ name, copy, preview }) => {
+                            visibleCategories.map(({ name, copy, preview, demoPath }) => {
                                 const isSaved = savedItems.includes(name);
                                 const isActive = activeCategory === name;
 
@@ -182,7 +193,7 @@ export default function LandingPage() {
                                         aria-pressed={isActive}
                                     >
                                         <div
-                                            className="category-tile-preview"
+                                            className={`category-tile-preview${name === 'Wedding' ? ' category-tile-preview--velvet' : ''}`}
                                             style={{ backgroundColor: preview }}
                                             aria-hidden="true"
                                         />
@@ -190,7 +201,17 @@ export default function LandingPage() {
                                             <h3 className="category-tile-name">{name}</h3>
                                             <p className="category-tile-desc">{copy}</p>
                                             <div className="category-tile-footer">
-                                                <span className="category-tile-action">View designs</span>
+                                                {demoPath ? (
+                                                    <Link
+                                                        to={demoPath}
+                                                        className="category-tile-action category-tile-action--link"
+                                                        onClick={(event) => event.stopPropagation()}
+                                                    >
+                                                        Try guest demo
+                                                    </Link>
+                                                ) : (
+                                                    <span className="category-tile-action">View designs</span>
+                                                )}
                                                 <button
                                                     type="button"
                                                     className={`category-tile-save ${isSaved ? 'is-saved' : ''}`}

@@ -9,8 +9,10 @@ class Guest extends Model
 {
     protected $fillable = [
         'wedding_id',
+        'token',
         'name',
         'sort_order',
+        'rsvp_status',
     ];
 
     public function wedding(): BelongsTo

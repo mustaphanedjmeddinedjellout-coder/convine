@@ -1,0 +1,964 @@
+:root {
+    --font-display: 'Great Vibes', cursive;
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-body: 'Cormorant Garamond', Georgia, serif;
+
+    --color-ivory: #faf6f0;
+    --color-champagne: #e8dcc8;
+    --color-gold: #c9a962;
+    --color-gold-light: #e8d5a3;
+    --color-velvet: #6b0f1a;
+    --color-velvet-deep: #3d0810;
+    --color-ink: #2a1f14;
+    --color-rose: #8b4a5c;
+}
+
+html.invitation-active.invitation-locked {
+    overflow: hidden;
+    height: 100%;
+}
+
+html.invitation-active.invitation-locked body {
+    overflow: hidden;
+    height: 100%;
+}
+
+.invitation-root {
+    overflow-x: hidden;
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    touch-action: pan-y;
+}
+
+.invitation-story {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.invitation-story.is-visible {
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ── Scene 1: Red Drape ── */
+
+.drape-scene {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    perspective: 1200px;
+}
+
+.drape-scene.is-open {
+    pointer-events: none;
+}
+
+.drape-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 52%;
+    transform-origin: top center;
+    transform-style: preserve-3d;
+    overflow: hidden;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+.drape-panel--left {
+    left: 0;
+}
+
+.drape-panel--right {
+    right: 0;
+}
+
+.drape-fabric {
+    position: absolute;
+    inset: 0;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0,
+            transparent 18px,
+            rgb(0 0 0 / 8%) 18px,
+            rgb(0 0 0 / 8%) 20px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent 0,
+            transparent 40px,
+            rgb(255 255 255 / 3%) 40px,
+            rgb(255 255 255 / 3%) 42px
+        ),
+        linear-gradient(175deg, #8b1a2b 0%, var(--color-velvet) 35%, var(--color-velvet-deep) 100%);
+    box-shadow: inset -8px 0 24px rgb(0 0 0 / 35%);
+}
+
+.drape-panel--right .drape-fabric {
+    box-shadow: inset 8px 0 24px rgb(0 0 0 / 35%);
+}
+
+.drape-fold {
+    position: absolute;
+    inset-block: 0;
+    width: 28%;
+    background: linear-gradient(90deg, rgb(0 0 0 / 25%), transparent 70%);
+    pointer-events: none;
+}
+
+.drape-panel--left .drape-fold {
+    right: 0;
+}
+
+.drape-panel--right .drape-fold {
+    left: 0;
+    transform: scaleX(-1);
+}
+
+.drape-rod {
+    position: absolute;
+    top: 0;
+    left: -2%;
+    right: -2%;
+    height: 14px;
+    background: linear-gradient(180deg, #d4af37, #8b6914 60%, #5c4510);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 40%);
+    z-index: 2;
+}
+
+.drape-cta {
+    position: relative;
+    z-index: 110;
+    text-align: center;
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+}
+
+.drape-scene.is-opening .drape-cta {
+    opacity: 0;
+}
+
+.drape-cta-label {
+    font-family: var(--font-serif);
+    font-size: clamp(0.85rem, 3vw, 1rem);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--color-gold-light);
+    text-shadow: 0 2px 20px rgb(0 0 0 / 60%);
+}
+
+.drape-cta-hint {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    color: #fff;
+    text-shadow: 0 4px 30px rgb(0 0 0 / 50%);
+    animation: drape-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes drape-pulse {
+    0%,
+    100% {
+        opacity: 0.85;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.03);
+    }
+}
+
+/* ── Shared scene layout ── */
+
+.invite-scene {
+    position: relative;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 1.5rem;
+    text-align: center;
+}
+
+.invite-scene--compact {
+    min-height: 70svh;
+}
+
+/* ── Scene 2: Couple Names ── */
+
+.names-scene {
+    background:
+        radial-gradient(ellipse at 50% 0%, rgb(201 169 98 / 12%) 0%, transparent 60%),
+        var(--color-ivory);
+}
+
+.couple-name {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 14vw, 7rem);
+    line-height: 1.1;
+    color: var(--color-ink);
+    opacity: 0;
+}
+
+.couple-ampersand {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-style: italic;
+    color: var(--color-gold);
+    margin: 0.5rem 0;
+    opacity: 0;
+    letter-spacing: 0.2em;
+}
+
+.names-divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+    margin: 1.5rem auto;
+    opacity: 0;
+}
+
+/* ── Scene 3: Date Reveal ── */
+
+.date-scene {
+    background: linear-gradient(180deg, var(--color-ivory) 0%, #f3ebe0 100%);
+}
+
+.date-scene-title {
+    font-family: var(--font-serif);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--color-rose);
+    margin-bottom: 2.5rem;
+    opacity: 0;
+}
+
+.date-reveal-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.65rem, 3vw, 1.25rem);
+    width: min(100%, 400px);
+    padding-inline: 0.5rem;
+}
+
+.date-reveal-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+}
+
+.date-reveal-circle {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #fff;
+    border: 2px solid rgb(201 169 98 / 45%);
+    box-shadow:
+        0 8px 28px rgb(42 31 20 / 10%),
+        inset 0 0 0 1px rgb(255 255 255 / 60%);
+    flex-shrink: 0;
+}
+
+.date-reveal-circle--day,
+.date-reveal-circle--year {
+    width: clamp(88px, 24vw, 108px);
+    height: clamp(88px, 24vw, 108px);
+}
+
+.date-reveal-circle--month {
+    width: clamp(100px, 28vw, 124px);
+    height: clamp(100px, 28vw, 124px);
+}
+
+.date-reveal-circle.is-revealed {
+    border-color: var(--color-gold);
+    box-shadow: 0 8px 32px rgb(201 169 98 / 25%);
+}
+
+.date-reveal-value {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    text-align: center;
+    font-family: var(--font-serif);
+    font-weight: 500;
+    color: var(--color-ink);
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+    pointer-events: none;
+}
+
+.date-reveal-circle--day .date-reveal-value,
+.date-reveal-circle--year .date-reveal-value {
+    font-size: clamp(1.5rem, 5.5vw, 2rem);
+}
+
+.date-reveal-circle--month .date-reveal-value {
+    font-size: clamp(0.85rem, 3.2vw, 1.05rem);
+}
+
+.date-reveal-value.is-glowing {
+    animation: date-glow 1.8s ease-out;
+}
+
+@keyframes date-glow {
+    0% {
+        text-shadow: 0 0 0 transparent;
+    }
+
+    30% {
+        text-shadow: 0 0 30px rgb(201 169 98 / 80%), 0 0 60px rgb(201 169 98 / 40%);
+        color: var(--color-gold);
+    }
+
+    100% {
+        text-shadow: 0 0 0 transparent;
+    }
+}
+
+.date-scratch-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: crosshair;
+}
+
+/* Shared scratch brush date cards (all templates) */
+.scratch-date-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.65rem, 3vw, 1.25rem);
+    width: min(100%, 420px);
+    padding-inline: 0.5rem;
+}
+
+.scratch-date-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+}
+
+.scratch-date-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.scratch-date-card--circle {
+    border-radius: 50%;
+    background: #fff;
+}
+
+.scratch-date-card--rect {
+    border-radius: 2px;
+    background: var(--noir-panel, #12121a);
+}
+
+.scratch-date-card--velvet {
+    border: 2px solid rgb(201 169 98 / 45%);
+    box-shadow: 0 8px 28px rgb(42 31 20 / 10%);
+}
+
+.scratch-date-card--velvet.scratch-date-card--day,
+.scratch-date-card--velvet.scratch-date-card--year,
+.scratch-date-card--bloom.scratch-date-card--day,
+.scratch-date-card--bloom.scratch-date-card--year {
+    width: clamp(92px, 25vw, 112px);
+    height: clamp(92px, 25vw, 112px);
+}
+
+.scratch-date-card--velvet.scratch-date-card--month,
+.scratch-date-card--bloom.scratch-date-card--month {
+    width: clamp(104px, 29vw, 128px);
+    height: clamp(104px, 29vw, 128px);
+}
+
+.scratch-date-card--bloom {
+    border: 2px solid rgb(232 180 184 / 55%);
+    box-shadow: 0 10px 30px rgb(196 123 132 / 18%);
+}
+
+.scratch-date-card--noir {
+    width: clamp(96px, 28vw, 120px);
+    height: 130px;
+    border: 1px solid rgb(212 175 55 / 45%);
+    box-shadow: 0 12px 36px rgb(0 0 0 / 35%);
+}
+
+.scratch-date-card.is-revealed.scratch-date-card--velvet {
+    border-color: var(--color-gold);
+}
+
+.scratch-date-card.is-revealed.scratch-date-card--bloom {
+    border-color: #c9a87c;
+}
+
+.scratch-date-card.is-revealed.scratch-date-card--noir {
+    border-color: #d4af37;
+}
+
+.scratch-date-value {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 0.5rem;
+    text-align: center;
+    font-weight: 500;
+    line-height: 1.15;
+    pointer-events: none;
+}
+
+.scratch-date-value--velvet {
+    font-family: var(--font-serif);
+    color: var(--color-ink);
+    font-size: clamp(1.4rem, 5vw, 1.9rem);
+}
+
+.scratch-date-card--month .scratch-date-value--velvet,
+.scratch-date-card--month .scratch-date-value--bloom {
+    font-size: clamp(0.85rem, 3.2vw, 1.05rem);
+}
+
+.scratch-date-value--bloom {
+    font-family: var(--font-serif);
+    color: #4a3a3a;
+    font-size: clamp(1.35rem, 4.8vw, 1.85rem);
+}
+
+.scratch-date-value--noir {
+    font-family: Cinzel, Georgia, serif;
+    font-size: clamp(0.9rem, 3.2vw, 1.15rem);
+    letter-spacing: 0.06em;
+    color: #e8d5a3;
+}
+
+.scratch-date-value.is-glowing {
+    animation: date-glow 1.8s ease-out;
+}
+
+.scratch-date-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: grab;
+}
+
+.scratch-date-canvas:active {
+    cursor: grabbing;
+}
+
+.scratch-date-card:not(.is-revealed)::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 12%);
+    pointer-events: none;
+    content: '';
+}
+
+.scratch-date-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+}
+
+.scratch-date-label--velvet {
+    color: var(--color-gold);
+}
+
+.scratch-date-label--bloom {
+    color: #c9a87c;
+}
+
+.scratch-date-label--noir {
+    color: #8a8478;
+}
+
+.scratch-date-hint {
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    font-style: italic;
+    opacity: 0.75;
+}
+
+.scratch-date-hint--bloom {
+    color: #8fa98f;
+}
+
+.scratch-date-hint--noir {
+    color: #8a8478;
+}
+
+.date-reveal-hint {
+    margin-top: 1.5rem;
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--color-rose);
+    opacity: 0.7;
+}
+
+.date-reveal-sublabel {
+    font-family: var(--font-serif);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+}
+
+/* ── Scene 4: Time ── */
+
+.time-scene {
+    background: var(--color-ivory);
+}
+
+.time-label {
+    font-family: var(--font-serif);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--color-rose);
+    margin-bottom: 1rem;
+}
+
+.time-value {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 12vw, 5.5rem);
+    color: var(--color-ink);
+}
+
+/* ── Scene 5: Letter ── */
+
+.letter-scene {
+    background: linear-gradient(180deg, #f3ebe0 0%, var(--color-ivory) 100%);
+    padding-block: 5rem;
+}
+
+.letter-frame {
+    position: relative;
+    width: min(100%, 380px);
+    padding: 3rem 2rem 2.5rem;
+    background:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+        linear-gradient(145deg, #fffef9 0%, #f8f0e4 100%);
+    box-shadow:
+        0 20px 60px rgb(42 31 20 / 12%),
+        inset 0 0 0 1px rgb(201 169 98 / 20%);
+}
+
+.letter-border-outer {
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--color-gold);
+    pointer-events: none;
+}
+
+.letter-border-inner {
+    position: absolute;
+    inset: 14px;
+    border: 1px solid rgb(201 169 98 / 35%);
+    pointer-events: none;
+}
+
+.letter-corner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: var(--color-gold);
+    border-style: solid;
+    pointer-events: none;
+}
+
+.letter-corner--tl {
+    top: 4px;
+    left: 4px;
+    border-width: 2px 0 0 2px;
+}
+
+.letter-corner--tr {
+    top: 4px;
+    right: 4px;
+    border-width: 2px 2px 0 0;
+}
+
+.letter-corner--bl {
+    bottom: 4px;
+    left: 4px;
+    border-width: 0 0 2px 2px;
+}
+
+.letter-corner--br {
+    bottom: 4px;
+    right: 4px;
+    border-width: 0 2px 2px 0;
+}
+
+.letter-greeting {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--color-ink);
+    margin-bottom: 1.5rem;
+}
+
+.letter-greeting strong {
+    font-weight: 600;
+    color: var(--color-gold);
+}
+
+.letter-body {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--color-ink);
+    opacity: 0.85;
+}
+
+.letter-signature {
+    margin-top: 2rem;
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--color-ink);
+}
+
+/* ── Scene 6: Photo Story ── */
+
+.photo-story-scene {
+    min-height: auto;
+    padding-block: 6rem 4rem;
+    background: var(--color-ivory);
+}
+
+.photo-story-title {
+    font-family: var(--font-serif);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--color-rose);
+    margin-bottom: 3rem;
+}
+
+.photo-story-stage {
+    position: relative;
+    width: min(100%, 360px);
+    height: 480px;
+    margin-inline: auto;
+}
+
+.photo-story-item {
+    position: absolute;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgb(42 31 20 / 18%);
+}
+
+.photo-story-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.photo-story-item--1 {
+    width: 72%;
+    height: 55%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.photo-story-item--2 {
+    width: 58%;
+    height: 48%;
+    top: 18%;
+    right: 0;
+    z-index: 2;
+    border: 3px solid var(--color-ivory);
+}
+
+.photo-story-item--3 {
+    width: 65%;
+    height: 42%;
+    bottom: 12%;
+    left: 5%;
+    z-index: 3;
+}
+
+.photo-story-item--4 {
+    width: 50%;
+    height: 38%;
+    bottom: 0;
+    right: 8%;
+    z-index: 4;
+    border: 2px solid var(--color-gold-light);
+}
+
+.photo-story-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #e8dcc8, #d4c4a8);
+}
+
+/* ── Scene 7: Countdown ── */
+
+.countdown-scene {
+    background:
+        radial-gradient(ellipse at 50% 100%, rgb(201 169 98 / 10%) 0%, transparent 60%),
+        var(--color-ivory);
+}
+
+.countdown-title {
+    font-family: var(--font-serif);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--color-rose);
+    margin-bottom: 2.5rem;
+}
+
+.countdown-grid {
+    display: flex;
+    gap: clamp(1rem, 5vw, 2.5rem);
+    justify-content: center;
+}
+
+.countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.countdown-number {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 10vw, 4.5rem);
+    line-height: 1;
+    color: var(--color-ink);
+    min-width: 2ch;
+}
+
+.countdown-label {
+    font-family: var(--font-serif);
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+}
+
+.countdown-separator {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--color-gold);
+    align-self: flex-start;
+    margin-top: 0.5rem;
+    opacity: 0.5;
+}
+
+/* ── Scene 8: Location ── */
+
+.location-scene {
+    background: linear-gradient(180deg, var(--color-ivory) 0%, #f0e8dc 100%);
+}
+
+.location-title {
+    font-family: var(--font-serif);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--color-rose);
+    margin-bottom: 1.5rem;
+}
+
+.location-venue {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 8vw, 3.5rem);
+    color: var(--color-ink);
+    margin-bottom: 0.75rem;
+}
+
+.location-address {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-ink);
+    opacity: 0.7;
+    max-width: 280px;
+    margin-inline: auto;
+}
+
+.location-map-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding: 0.85rem 2rem;
+    font-family: var(--font-serif);
+    font-size: 0.8rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-ink);
+    border: 1px solid var(--color-gold);
+    background: transparent;
+    transition: background 0.4s ease, color 0.4s ease;
+}
+
+.location-map-btn:hover {
+    background: var(--color-gold);
+    color: #fff;
+}
+
+/* ── Scene 9: RSVP ── */
+
+.rsvp-scene {
+    background: var(--color-ivory);
+    padding-bottom: 6rem;
+}
+
+.rsvp-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 8vw, 3rem);
+    color: var(--color-ink);
+    margin-bottom: 2rem;
+}
+
+.rsvp-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: min(100%, 300px);
+}
+
+.rsvp-btn {
+    padding: 1rem 2rem;
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid var(--color-gold);
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: all 0.4s ease;
+}
+
+.rsvp-btn:hover:not(:disabled) {
+    background: var(--color-gold);
+    color: #fff;
+}
+
+.rsvp-btn:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.rsvp-btn--primary {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-ivory);
+}
+
+.rsvp-btn--primary:hover:not(:disabled) {
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+}
+
+.rsvp-confirmation {
+    max-width: 320px;
+}
+
+.rsvp-confirmation-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.rsvp-confirmation-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    color: var(--color-ink);
+    margin-bottom: 0.75rem;
+}
+
+.rsvp-confirmation-text {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-ink);
+    opacity: 0.75;
+}
+
+/* ── Confetti canvas ── */
+
+.confetti-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    pointer-events: none;
+}
+
+/* ── Scroll indicator ── */
+
+.scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.4;
+    animation: scroll-bob 2s ease-in-out infinite;
+}
+
+.scroll-hint span {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-rose);
+}
+
+@keyframes scroll-bob {
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(6px);
+    }
+}

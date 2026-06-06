@@ -70,4 +70,10 @@ export const api = {
             method: 'PUT',
             body: JSON.stringify({ names }),
         }),
+    getInvitation: (token) => request(`/api/invite/${token}`),
+    submitRsvp: (token, status) =>
+        request(`/api/invite/${token}/rsvp`, {
+            method: 'POST',
+            body: JSON.stringify({ status }),
+        }),
 };

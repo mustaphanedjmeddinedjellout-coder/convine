@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Guest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class GuestController extends Controller
 {
@@ -29,12 +30,18 @@ class GuestController extends Controller
             ->unique()
             ->values();
 
+        $existing = $wedding->guests()->get()->keyBy(fn (Guest $guest) => strtolower($guest->name));
+
         $wedding->guests()->delete();
 
-        $guests = $names->map(function (string $name, int $index) use ($wedding) {
+        $guests = $names->map(function (string $name, int $index) use ($wedding, $existing) {
+            $match = $existing->get(strtolower($name));
+
             return $wedding->guests()->create([
                 'name' => $name,
                 'sort_order' => $index,
+                'token' => $match?->token ?? (string) Str::uuid(),
+                'rsvp_status' => $match?->rsvp_status,
             ]);
         });
 
@@ -43,6 +50,9 @@ class GuestController extends Controller
                 'id' => $guest->id,
                 'name' => $guest->name,
                 'sort_order' => $guest->sort_order,
+                'token' => $guest->token,
+                'rsvp_status' => $guest->rsvp_status,
+                'invite_url' => '/invite/'.$guest->token,
             ])->values(),
         ]);
     }

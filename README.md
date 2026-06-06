@@ -28,6 +28,14 @@ npm run dev
 
 Open **http://localhost:3000** in your browser.
 
+## Guest demo templates (no login)
+
+| Template | URL |
+|----------|-----|
+| Velvet — red drape cinematic | http://localhost:3000/invite/demo |
+| Bloom — blush botanical | http://localhost:3000/invite/demo-bloom |
+| Noir — art deco midnight gold | http://localhost:3000/invite/demo-noir |
+
 ## Admin login
 
 - Email: `you@platform.com`
