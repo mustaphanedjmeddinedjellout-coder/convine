@@ -374,15 +374,161 @@
     background: var(--bloom-gold);
 }
 
-.bloom-invitation .invite-scene {
-    background: transparent;
+/* Base invitation transparent scenes layout */
+.bloom-invitation {
+    background:
+        radial-gradient(ellipse at 30% 20%, rgba(232, 180, 184, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 80%, rgba(143, 169, 143, 0.15) 0%, transparent 55%),
+        var(--bloom-bg);
+    position: relative;
 }
 
+.bloom-invitation .bloom-scene,
 .bloom-invitation .time-scene,
 .bloom-invitation .countdown-scene,
 .bloom-invitation .location-scene,
 .bloom-invitation .rsvp-scene {
-    background:
-        radial-gradient(ellipse at 30% 20%, rgb(232 180 184 / 20%) 0%, transparent 55%),
-        var(--bloom-bg);
+    background: transparent !important;
+    position: relative;
+    z-index: 2;
+}
+
+/* Canvas background petals */
+.falling-petals-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Names frame & flourishes */
+.bloom-names-frame {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    padding: 3.5rem 2rem;
+    margin: 0 auto;
+    border: 1px solid rgba(196, 123, 132, 0.15);
+    border-radius: 4px;
+    background: rgba(255, 250, 247, 0.35);
+    backdrop-filter: blur(3px);
+    box-shadow: 0 16px 40px rgba(196, 123, 132, 0.04);
+}
+
+.bloom-vine-flourish {
+    position: absolute;
+    color: var(--bloom-rose);
+    pointer-events: none;
+}
+
+.bloom-vine-flourish--tl {
+    top: 10px;
+    left: 10px;
+}
+
+.bloom-vine-flourish--tr {
+    top: 10px;
+    right: 10px;
+    transform: scaleX(-1);
+}
+
+.bloom-vine-flourish--bl {
+    bottom: 10px;
+    left: 10px;
+    transform: scaleY(-1);
+}
+
+.bloom-vine-flourish--br {
+    bottom: 10px;
+    right: 10px;
+    transform: scale(-1);
+}
+
+/* Scroll hint */
+.bloom-scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3.5rem;
+    color: var(--bloom-rose);
+    animation: bloom-hint-bounce 2.2s infinite ease-in-out;
+}
+
+.bloom-scroll-hint-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    opacity: 0.85;
+}
+
+.bloom-scroll-hint-chevron {
+    color: var(--bloom-rose);
+    opacity: 0.85;
+}
+
+@keyframes bloom-hint-bounce {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(6px); opacity: 1; }
+}
+
+/* Letter card deckled outline */
+.bloom-letter-deckled {
+    border: 1px solid rgba(201, 168, 124, 0.3);
+    box-shadow: 
+        0 16px 48px rgba(74, 58, 58, 0.08),
+        0 0 0 8px #fffaf7,
+        0 0 0 9px rgba(201, 168, 124, 0.18),
+        inset 0 0 24px rgba(201, 168, 124, 0.03);
+}
+
+/* Stamped Wax Seal */
+.bloom-wax-seal {
+    display: flex;
+    justify-content: center;
+    margin-top: 2.2rem;
+    color: var(--bloom-rose);
+    filter: drop-shadow(0 4px 10px rgba(196, 123, 132, 0.32));
+    transition: transform 0.4s ease;
+    cursor: pointer;
+}
+
+.bloom-wax-seal:hover {
+    transform: scale(1.08) rotate(5deg);
+}
+
+/* Polaroid-rotated photo frames */
+.bloom-photo-polaroid {
+    border: 8px solid #ffffff !important;
+    border-bottom-width: 32px !important;
+    border-radius: 2px !important;
+    box-shadow: 0 12px 32px rgba(74, 58, 58, 0.1) !important;
+    background: #ffffff;
+    overflow: hidden;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease;
+}
+
+.bloom-photo-polaroid:hover {
+    box-shadow: 0 18px 40px rgba(74, 58, 58, 0.18) !important;
+    z-index: 10;
+}
+
+.bloom-photo-wrap {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.bloom-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.bloom-photo-polaroid:hover .bloom-photo-img {
+    transform: scale(1.08);
 }

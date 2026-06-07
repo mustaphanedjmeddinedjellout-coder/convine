@@ -180,6 +180,7 @@ export default function SiteHeader({
 
                 <Link to="/" className="convive-logo" aria-label="Convive home" onClick={closePanels}>
                     <span className="convive-script">Convive</span>
+                    <span className="convive-submark">MEMORABLE EVENTS</span>
                 </Link>
 
                 <div className="desktop-header-actions">

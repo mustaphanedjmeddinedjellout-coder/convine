@@ -45,6 +45,60 @@ const products = [
     },
 ];
 
+function CategoryPreview({ name, preview }) {
+    if (name === 'Wedding') {
+        return (
+            <div className="category-tile-preview category-tile-preview--wedding">
+                <div className="category-tile-preview-ornament" />
+                <div className="category-tile-preview-content">
+                    <span className="category-tile-preview-title">Amina &amp; Yacine</span>
+                    <span className="category-tile-preview-label">Wedding Invitation</span>
+                </div>
+            </div>
+        );
+    }
+    if (name === 'Birthday') {
+        return (
+            <div className="category-tile-preview category-tile-preview--birthday">
+                <div className="category-tile-preview-confetti" />
+                <div className="category-tile-preview-content">
+                    <span className="category-tile-preview-title">Soirée d'Anniversaire</span>
+                    <span className="category-tile-preview-label">Milestone Birthday</span>
+                </div>
+            </div>
+        );
+    }
+    if (name === 'Dinner') {
+        return (
+            <div className="category-tile-preview category-tile-preview--dinner">
+                <div className="category-tile-preview-frame" />
+                <div className="category-tile-preview-content">
+                    <span className="category-tile-preview-title">Rendezvous</span>
+                    <span className="category-tile-preview-label">Supper Clubs &amp; Dinners</span>
+                </div>
+            </div>
+        );
+    }
+    if (name === 'Baby') {
+        return (
+            <div className="category-tile-preview category-tile-preview--baby">
+                <div className="category-tile-preview-star" />
+                <div className="category-tile-preview-content">
+                    <span className="category-tile-preview-title">Welcome Little One</span>
+                    <span className="category-tile-preview-label">Shower &amp; Birth Announcements</span>
+                </div>
+            </div>
+        );
+    }
+    return (
+        <div
+            className="category-tile-preview"
+            style={{ backgroundColor: preview }}
+            aria-hidden="true"
+        />
+    );
+}
+
 export default function LandingPage() {
     const [activeCategory, setActiveCategory] = useState('Wedding');
     const [searchQuery, setSearchQuery] = useState('');
@@ -130,7 +184,7 @@ export default function LandingPage() {
 
                     <div className="hero-content">
                         <h1 className="hero-title">
-                            Online invitations and cards for all the moments that matter
+                            Online <em>invitations</em> &amp; <em>cards</em> for the moments that matter
                         </h1>
 
                         <div className="hero-cta-group">
@@ -192,11 +246,7 @@ export default function LandingPage() {
                                         tabIndex={0}
                                         aria-pressed={isActive}
                                     >
-                                        <div
-                                            className={`category-tile-preview${name === 'Wedding' ? ' category-tile-preview--velvet' : ''}`}
-                                            style={{ backgroundColor: preview }}
-                                            aria-hidden="true"
-                                        />
+                                        <CategoryPreview name={name} preview={preview} />
                                         <div className="category-tile-body">
                                             <h3 className="category-tile-name">{name}</h3>
                                             <p className="category-tile-desc">{copy}</p>

@@ -11,6 +11,11 @@
     --color-velvet-deep: #3d0810;
     --color-ink: #2a1f14;
     --color-rose: #8b4a5c;
+
+    /* Compatibility variables */
+    --gold: var(--color-gold);
+    --gold-light: var(--color-gold-light);
+    --gold-dark: #8b6914;
 }
 
 html.invitation-active.invitation-locked {
@@ -962,3 +967,533 @@ html.invitation-active.invitation-locked body {
         transform: translateX(-50%) translateY(6px);
     }
 }
+
+/* ── WebGL Curtain Reveal ── */
+
+.curtain-reveal-scene {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent; /* Transparent so the underlying invitation is visible as curtains open */
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    transition: opacity 0.8s ease;
+}
+
+.curtain-reveal-scene.is-opening {
+    pointer-events: none;
+}
+
+.curtain-reveal-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 2; /* Canvas sits in front of the invitation content */
+    pointer-events: none;
+}
+
+.curtain-reveal-cta {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    pointer-events: none;
+    width: 100%;
+    max-width: 320px;
+}
+
+.curtain-reveal-cta-label {
+    font-family: var(--font-serif);
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--color-gold-light);
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.curtain-reveal-cta-hint {
+    margin-top: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 8vw, 4rem);
+    color: #ffffff;
+    margin: 0;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    animation: curtain-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes curtain-pulse {
+    0%, 100% {
+        opacity: 0.75;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* ── Curtain Invitation Content (Behind Curtain) ── */
+
+.curtain-invitation-content {
+    position: absolute;
+    inset: 0;
+    z-index: 1; /* Behind the curtain canvas */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    background: radial-gradient(circle at 50% 50%, #2a050a 0%, #060002 100%); /* Warm burgundy center glow */
+}
+
+.curtain-invitation-inner {
+    max-width: 500px;
+    color: #faf6f0; /* Ivory color for luxury contrast */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.curtain-eyebrow {
+    font-family: var(--font-serif);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--color-gold-light);
+    margin-bottom: 1.5rem;
+    opacity: 0.8;
+}
+
+.curtain-names {
+    font-family: var(--font-display);
+    font-size: clamp(3.2rem, 12vw, 5.8rem);
+    line-height: 1.15;
+    color: #ffffff;
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-shadow: 0 2px 15px rgba(201, 169, 98, 0.25); /* Subtle warm golden glow */
+}
+
+.curtain-name {
+    display: block;
+}
+
+.curtain-ampersand {
+    font-family: var(--font-serif);
+    font-size: clamp(1.2rem, 4vw, 2rem);
+    font-style: italic;
+    color: var(--color-gold);
+    margin: 0.3rem 0;
+    letter-spacing: 0.1em;
+}
+
+.curtain-divider {
+    color: var(--color-gold);
+    opacity: 0.6;
+    margin-bottom: 2rem;
+}
+
+.curtain-details {
+    font-family: var(--font-serif);
+    font-size: clamp(0.95rem, 3vw, 1.15rem);
+    line-height: 1.6;
+    color: #e8dcc8; /* Champagne */
+    letter-spacing: 0.05em;
+    margin: 0 0 1.5rem 0;
+}
+
+.curtain-dot {
+    color: var(--color-gold);
+    margin: 0 0.5rem;
+}
+
+.curtain-guest-line {
+    font-family: var(--font-serif);
+    font-size: clamp(0.9rem, 2.8vw, 1.1rem);
+    font-style: italic;
+    color: #faf6f0;
+    opacity: 0.9;
+    margin-top: 1rem;
+    border-top: 1px solid rgba(201, 169, 98, 0.2);
+    padding-top: 1.5rem;
+    width: 80%;
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+/*  PREMIUM VISUAL OVERHAUL SYSTEM                                    */
+/* ────────────────────────────────────────────────────────────────── */
+
+/* 1. Global Page Background and Transparent Overlay Scenes */
+.invitation-root.velvet-invitation {
+    background: radial-gradient(circle at 50% 30%, #faf6f0 0%, #ede3d3 100%) !important;
+}
+
+.names-scene,
+.date-scene,
+.time-scene,
+.letter-scene,
+.photo-story-scene,
+.countdown-scene,
+.location-scene,
+.rsvp-scene {
+    background: transparent !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* 2. Golden Particles Canvas */
+.golden-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 3. Ornamental Section Dividers */
+.ornamental-divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 2.5rem auto;
+    color: var(--color-gold);
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.divider-svg {
+    width: min(85%, 320px);
+    height: auto;
+    display: block;
+}
+
+/* 4. Couple Names Shimmer & Flourishes */
+.couple-names-wrapper {
+    position: relative;
+    overflow: hidden;
+    padding: 1rem 1.5rem;
+}
+
+.couple-names-wrapper.shimmer-active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.45) 50%,
+        transparent 100%
+    );
+    transform: skewX(-20deg);
+    animation: shimmer-effect 6.5s infinite ease-in-out;
+}
+
+@keyframes shimmer-effect {
+    0% { left: -150%; }
+    12% { left: 150%; }
+    100% { left: 150%; }
+}
+
+.names-flourish-frame {
+    position: absolute;
+    inset: 1.5rem;
+    pointer-events: none;
+    border: 1px solid rgba(201, 169, 98, 0.1);
+}
+
+.flourish-corner {
+    position: absolute;
+    width: clamp(30px, 8vw, 55px);
+    height: clamp(30px, 8vw, 55px);
+    color: var(--color-gold);
+}
+
+.flourish-corner--tl { top: 0; left: 0; }
+.flourish-corner--tr { top: 0; right: 0; transform: scaleX(-1); }
+.flourish-corner--bl { bottom: 0; left: 0; transform: scaleY(-1); }
+.flourish-corner--br { bottom: 0; right: 0; transform: scale(-1); }
+
+/* 5. Date Reveal Expanding Lines and Badge */
+.date-reveal-wrapper {
+    position: relative;
+    padding-block: 1.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.date-line-expand {
+    width: min(85%, 320px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+    transform-origin: center;
+}
+
+.date-line-expand--bottom {
+    margin-top: 1rem;
+}
+
+.date-badge {
+    position: relative;
+    padding: 1.25rem 0.75rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(201, 169, 98, 0.18);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    margin-block: 1rem;
+    width: min(90%, 420px);
+}
+
+/* 6. Wedding Time Glow and Ornaments */
+.time-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    border: 1px solid rgba(201, 169, 98, 0.2);
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.8s ease;
+}
+
+.time-display.time-glow {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 20px rgba(201, 169, 98, 0.2), inset 0 0 10px rgba(201, 169, 98, 0.08);
+}
+
+.time-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-gold);
+}
+
+.time-ornament {
+    width: min(60%, 200px);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+    margin: 1.25rem auto;
+    opacity: 0.45;
+}
+
+/* 7. Letter Frame & Wax Seal */
+.wax-seal {
+    margin: 2.2rem auto 0;
+    display: block;
+    cursor: pointer;
+    filter: drop-shadow(0 4px 10px rgba(139, 74, 92, 0.15));
+    transition: transform 0.3s ease;
+}
+
+.wax-seal:hover {
+    transform: scale(1.05);
+}
+
+.letter-frame {
+    transition: box-shadow 1.4s ease, border-color 1.4s ease;
+}
+
+.letter-frame.letter-revealed {
+    box-shadow: 
+        0 25px 65px rgb(42 31 20 / 14%),
+        inset 0 0 0 1px rgb(201 169 98 / 38%);
+}
+
+.letter-quote-mark {
+    position: absolute;
+    top: 1.5rem;
+    right: 2rem;
+    font-size: 3.5rem;
+    color: var(--color-gold);
+    opacity: 0.15;
+    line-height: 1;
+    font-family: Georgia, serif;
+}
+
+/* 8. Countdown unit and separators */
+.countdown-separator {
+    font-family: var(--font-serif);
+    font-size: clamp(2.2rem, 6vw, 3.2rem);
+    color: var(--color-gold);
+    line-height: 1.1;
+    opacity: 0.6;
+    animation: colon-pulse 1s infinite alternate;
+}
+
+@keyframes colon-pulse {
+    from { opacity: 0.25; }
+    to { opacity: 0.85; }
+}
+
+.countdown-glow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(75px, 16vw, 115px);
+    height: clamp(75px, 16vw, 115px);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.25) 70%, transparent 100%);
+    border: 1px solid rgba(201, 169, 98, 0.22);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
+}
+
+.countdown-ornament {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* 9. Photo Grid effects */
+.photo-story-item.ken-burns {
+    overflow: hidden;
+}
+
+.photo-story-item.ken-burns img {
+    transform: scale(1.02);
+    transition: transform 14s ease-out;
+}
+
+.photo-story-item.ken-burns:hover img {
+    transform: scale(1.10);
+}
+
+.photo-story-item.photo-glow {
+    border: 1px solid rgba(201, 169, 98, 0.2);
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.photo-story-item.photo-glow:hover {
+    border-color: var(--color-gold);
+    box-shadow: 0 15px 40px rgba(201, 169, 98, 0.22);
+}
+
+/* 10. Venue Glow & Map Button Shimmer */
+.location-glow {
+    position: relative;
+    padding: 3rem 2rem;
+    border-radius: 12px;
+    border: 1px solid rgba(201, 169, 98, var(--glow-opacity, 0.2));
+    background: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.03);
+    width: min(90%, 460px);
+    margin: 0 auto;
+    transition: border-color 0.8s ease, box-shadow 0.8s ease;
+}
+
+.location-pin-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    animation: pin-float 3.5s infinite ease-in-out;
+}
+
+@keyframes pin-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+}
+
+.btn-shimmer {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.32) 50%,
+        transparent 100%
+    );
+    transform: skewX(-25deg);
+    transition: none;
+    z-index: -1;
+}
+
+.btn-shimmer:hover::after {
+    left: 100%;
+    transition: left 0.85s ease-in-out;
+}
+
+/* 11. RSVP ripple & Success view */
+.rsvp-envelope-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    color: var(--color-gold);
+}
+
+.rsvp-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.rsvp-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.45);
+    pointer-events: none;
+    transform: scale(0);
+    z-index: 0;
+}
+
+.rsvp-success-animated {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+    width: min(100%, 340px);
+}
+
+/* 12. Elegant Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #faf6f0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #e8dcc8;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #c9a962;
+}
+

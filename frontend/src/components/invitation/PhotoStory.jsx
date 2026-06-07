@@ -23,6 +23,7 @@ export default function PhotoStory({ photos = [] }) {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
+            // Title entrance
             gsap.fromTo(
                 titleRef.current,
                 { opacity: 0, y: 30 },
@@ -37,21 +38,24 @@ export default function PhotoStory({ photos = [] }) {
                 },
             );
 
+            // Staggered reveal alternating direction: even from left, odd from right
             itemsRef.current.forEach((el, index) => {
                 if (!el) {
                     return;
                 }
 
-                const fromVars = [
-                    { opacity: 0, x: -80, rotation: -3 },
-                    { opacity: 0, x: 80, y: 40, rotation: 4 },
-                    { opacity: 0, y: 60, scale: 0.9 },
-                    { opacity: 0, x: 40, y: -30, rotation: -2 },
-                ];
+                const isEven = index % 2 === 0;
+                const fromVars = {
+                    opacity: 0,
+                    x: isEven ? -80 : 80,
+                    y: 30,
+                    rotation: isEven ? -4 : 4,
+                    scale: 0.92,
+                };
 
                 gsap.fromTo(
                     el,
-                    fromVars[index] ?? { opacity: 0, y: 40 },
+                    fromVars,
                     {
                         opacity: 1,
                         x: 0,
@@ -86,7 +90,7 @@ export default function PhotoStory({ photos = [] }) {
                         ref={(el) => {
                             itemsRef.current[index] = el;
                         }}
-                        className={`photo-story-item photo-story-item--${index + 1}`}
+                        className={`photo-story-item photo-story-item--${index + 1} ken-burns photo-glow`}
                     >
                         {src ? (
                             <img src={src} alt="" loading="lazy" />
