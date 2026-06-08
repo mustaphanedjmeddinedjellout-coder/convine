@@ -120,7 +120,7 @@ export default function WeddingTime({ eventTime }) {
     return (
         <section ref={sceneRef} className="invite-scene invite-scene--compact time-scene">
             <p ref={labelRef} className="time-label">
-                Wedding Time
+                The Ceremony Begins
             </p>
 
             {/* Decorative thin gold line above time */}

@@ -15,7 +15,8 @@ export default function CustomerDashboard() {
     const { user, logout } = useAuth();
     const [wedding, setWedding] = useState(null);
     const [guestText, setGuestText] = useState('');
-    const [photoText, setPhotoText] = useState('');
+    const [photoFiles, setPhotoFiles] = useState([]);
+    const [stats, setStats] = useState({ accepted: 0, refused: 0, pending: 0 });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [guestSaving, setGuestSaving] = useState(false);
@@ -27,7 +28,12 @@ export default function CustomerDashboard() {
             .then((data) => {
                 setWedding(data.wedding);
                 setGuestText(data.wedding.guests.map((guest) => guest.name).join('\n'));
-                setPhotoText((data.wedding.photos ?? []).join('\n'));
+                setPhotoFiles([]);
+                setStats({
+                    accepted: data.wedding.accepted_count ?? 0,
+                    refused: data.wedding.refused_count ?? 0,
+                    pending: data.wedding.pending_count ?? 0,
+                });
             })
             .catch((err) => setError(err.message))
             .finally(() => setLoading(false));
@@ -39,25 +45,30 @@ export default function CustomerDashboard() {
         setMessage('');
         setError('');
 
-        const photos = photoText
-            .split('\n')
-            .map((line) => line.trim())
-            .filter(Boolean)
-            .slice(0, 6);
+        const formData = new FormData();
+        formData.append('bride_name', wedding.bride_name ?? '');
+        formData.append('groom_name', wedding.groom_name ?? '');
+        formData.append('event_date', wedding.event_date ?? '');
+        formData.append('event_time', wedding.event_time ?? '');
+        formData.append('venue', wedding.venue ?? '');
+        formData.append('venue_address', wedding.venue_address ?? '');
+        formData.append('google_maps_url', wedding.google_maps_url ?? '');
+        formData.append('message', wedding.message ?? '');
+
+        (wedding.photos ?? []).forEach((photo) => {
+            if (typeof photo === 'string' && photo.trim()) {
+                formData.append('photos[]', photo);
+            }
+        });
+
+        photoFiles.slice(0, 6 - (wedding.photos ?? []).length).forEach((file) => {
+            formData.append('photos[]', file);
+        });
 
         try {
-            const data = await api.updateWedding({
-                bride_name: wedding.bride_name,
-                groom_name: wedding.groom_name,
-                event_date: wedding.event_date || null,
-                event_time: wedding.event_time,
-                venue: wedding.venue,
-                venue_address: wedding.venue_address,
-                message: wedding.message,
-                photos,
-            });
+            const data = await api.updateWedding(formData);
             setWedding(data.wedding);
-            setPhotoText((data.wedding.photos ?? []).join('\n'));
+            setPhotoFiles([]);
             setMessage('Invitation details saved.');
         } catch (err) {
             setError(err.message);
@@ -136,6 +147,21 @@ export default function CustomerDashboard() {
                         These details power the guest experience — drape opening, names, date reveal, letter, and more.
                     </p>
 
+                    <div className="mt-6 mb-4 grid gap-3 sm:grid-cols-3">
+                        <div className="border border-black/10 bg-white p-4 text-center">
+                            <p className="text-xs text-black/40">Accepted</p>
+                            <p className="mt-1 text-2xl font-semibold text-[#0f7a44]">{stats.accepted}</p>
+                        </div>
+                        <div className="border border-black/10 bg-white p-4 text-center">
+                            <p className="text-xs text-black/40">Refused</p>
+                            <p className="mt-1 text-2xl font-semibold text-[#8a2e2e]">{stats.refused}</p>
+                        </div>
+                        <div className="border border-black/10 bg-white p-4 text-center">
+                            <p className="text-xs text-black/40">Pending</p>
+                            <p className="mt-1 text-2xl font-semibold text-[#6b5d4d]">{stats.pending}</p>
+                        </div>
+                    </div>
+
                     <form className="mt-6 space-y-4" onSubmit={saveWedding}>
                         <label className="block">
                             <span className="form-label">Bride</span>
@@ -207,14 +233,34 @@ export default function CustomerDashboard() {
                         </label>
 
                         <label className="block">
-                            <span className="form-label">Photo URLs (one per line, up to 6)</span>
-                            <textarea
-                                className="mt-2 min-h-24 w-full border border-black/15 px-4 py-3 font-mono text-sm outline-none focus:border-black"
-                                value={photoText}
-                                onChange={(e) => setPhotoText(e.target.value)}
-                                placeholder="https://..."
+                            <span className="form-label">Photos from gallery</span>
+                            <input
+                                className="mt-2 w-full border border-black/15 px-4 py-3 outline-none file:mr-4 file:border-0 file:bg-black file:px-4 file:py-2 file:text-white"
+                                type="file"
+                                accept="image/*"
+                                multiple
+                                onChange={(e) => setPhotoFiles(Array.from(e.target.files ?? []))}
+                            />
+                            <p className="mt-2 text-sm text-black/50">Select up to 6 images from your device.</p>
+                        </label>
+
+                        <label className="block">
+                            <span className="form-label">Google Maps link</span>
+                            <input
+                                className="mt-2 w-full border border-black/15 px-4 py-3 outline-none focus:border-black"
+                                value={wedding.google_maps_url ?? ''}
+                                onChange={(e) => updateWeddingField('google_maps_url', e.target.value)}
+                                placeholder="https://www.google.com/maps/..."
                             />
                         </label>
+
+                        {Array.isArray(wedding.photos) && wedding.photos.length > 0 ? (
+                            <div className="grid gap-3 sm:grid-cols-2">
+                                {wedding.photos.map((photo) => (
+                                    <img key={photo} src={photo} alt="Wedding" className="h-32 w-full object-cover" />
+                                ))}
+                            </div>
+                        ) : null}
 
                         <button className="auth-button auth-button-fill" type="submit" disabled={saving}>
                             {saving ? 'Saving...' : 'Save invitation'}

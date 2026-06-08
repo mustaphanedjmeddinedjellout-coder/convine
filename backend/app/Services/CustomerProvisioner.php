@@ -34,6 +34,7 @@ class CustomerProvisioner
                 'title' => $data['title'],
                 'template_slug' => $data['template_slug'] ?? 'velvet',
                 'status' => 'draft',
+                'google_maps_url' => null,
             ]);
 
             return [

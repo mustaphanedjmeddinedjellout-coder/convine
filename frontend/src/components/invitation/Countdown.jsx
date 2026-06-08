@@ -95,7 +95,7 @@ export default function Countdown({ eventDate, eventTime }) {
                 </svg>
             </div>
 
-            <p className="countdown-title">Counting Down</p>
+            <p className="countdown-title">Until We Say I Do</p>
 
             <div className="countdown-grid">
                 {units.map((unit, index) => (

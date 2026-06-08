@@ -19,6 +19,7 @@ class Wedding extends Model
         'event_time',
         'venue',
         'venue_address',
+        'google_maps_url',
         'template_slug',
         'message',
         'photos',

@@ -174,7 +174,8 @@ export default function RSVP({ guestName, initialStatus, onSubmit, isDemo }) {
                     </svg>
                 </div>
 
-                <h2 className="rsvp-title">Will you attend?</h2>
+                <h2 className="rsvp-title">Kindly Respond</h2>
+                <p className="rsvp-subtitle">Your response is a gift to us</p>
 
                 <div className="rsvp-buttons">
                     <button
@@ -183,7 +184,7 @@ export default function RSVP({ guestName, initialStatus, onSubmit, isDemo }) {
                         disabled={submitting}
                         onClick={(e) => handleRsvp('attending', e)}
                     >
-                        Yes, I will attend
+                        Joyfully Accept
                     </button>
                     <button
                         type="button"
@@ -191,7 +192,7 @@ export default function RSVP({ guestName, initialStatus, onSubmit, isDemo }) {
                         disabled={submitting}
                         onClick={(e) => handleRsvp('declined', e)}
                     >
-                        Unfortunately, I cannot attend
+                        Respectfully Decline
                     </button>
                 </div>
             </div>

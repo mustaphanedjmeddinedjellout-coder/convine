@@ -181,9 +181,37 @@ export default function CurtainReveal({ onStart, onComplete, data }) {
         <CurtainScene leftSimRef={leftSimRef} rightSimRef={rightSimRef} />
       </Canvas>
 
+      {/* Invitation content visible behind the curtain as it opens */}
+      <div className="curtain-invitation-content">
+        <div className="curtain-invitation-inner">
+          <p className="curtain-eyebrow">Wedding Invitation</p>
+          <div className="curtain-names">
+            <span className="curtain-name">{data?.wedding?.bride_name || data?.brideName || 'Bride'}</span>
+            <span className="curtain-ampersand">&</span>
+            <span className="curtain-name">{data?.wedding?.groom_name || data?.groomName || 'Groom'}</span>
+          </div>
+          <div className="curtain-divider" aria-hidden="true">
+            <svg width="120" height="12" viewBox="0 0 120 12" fill="none">
+              <line x1="5" y1="6" x2="50" y2="6" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+              <circle cx="60" cy="6" r="2" fill="currentColor" opacity="0.5" />
+              <line x1="70" y1="6" x2="115" y2="6" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
+            </svg>
+          </div>
+          {data?.wedding?.venue && (
+            <p className="curtain-details">{data.wedding.venue}</p>
+          )}
+          {data?.guest?.name && (
+            <p className="curtain-guest-line">
+              Dear {data.guest.name}, you are cordially invited
+            </p>
+          )}
+        </div>
+      </div>
+
       {/* Call-to-action overlay */}
       {!isOpening && (
         <div className="curtain-reveal-cta">
+          <p className="curtain-reveal-cta-label">You Are Invited</p>
           <p className="curtain-reveal-cta-hint">Touch to Open</p>
         </div>
       )}

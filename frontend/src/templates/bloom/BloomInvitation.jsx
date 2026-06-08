@@ -37,7 +37,7 @@ export default function BloomInvitation({ data, isDemo, onRsvp }) {
                 <OrnamentalDivider variant="floral" />
                 <Countdown eventDate={wedding.event_date} eventTime={wedding.event_time} />
                 <OrnamentalDivider variant="floral" />
-                <Location venue={wedding.venue} venueAddress={wedding.venue_address} />
+                <Location venue={wedding.venue} venueAddress={wedding.venue_address} googleMapsUrl={wedding.google_maps_url} />
                 <OrnamentalDivider variant="floral" />
                 <RSVP guestName={guest.name} initialStatus={guest.rsvp_status} onSubmit={onRsvp} isDemo={isDemo} />
             </main>

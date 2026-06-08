@@ -30,6 +30,7 @@ class InvitationController extends Controller
                 'event_time' => $wedding->event_time,
                 'venue' => $wedding->venue,
                 'venue_address' => $wedding->venue_address,
+                'google_maps_url' => $wedding->google_maps_url,
                 'message' => $wedding->message,
                 'photos' => $wedding->photos ?? [],
             ],

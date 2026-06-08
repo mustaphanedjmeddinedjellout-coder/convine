@@ -17,6 +17,7 @@ async function ensureCsrf() {
 
 async function request(url, options = {}) {
     const method = options.method ?? 'GET';
+    const isFormData = typeof FormData !== 'undefined' && options.body instanceof FormData;
 
     if (method !== 'GET') {
         await ensureCsrf();
@@ -24,10 +25,13 @@ async function request(url, options = {}) {
 
     const headers = {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
         'X-XSRF-TOKEN': getCsrfToken(),
         ...(options.headers ?? {}),
     };
+
+    if (!isFormData) {
+        headers['Content-Type'] = 'application/json';
+    }
 
     const response = await fetch(url, {
         credentials: 'include',
@@ -63,7 +67,7 @@ export const api = {
     updateWedding: (payload) =>
         request('/api/wedding', {
             method: 'PATCH',
-            body: JSON.stringify(payload),
+            body: payload instanceof FormData ? payload : JSON.stringify(payload),
         }),
     syncGuests: (names) =>
         request('/api/wedding/guests', {

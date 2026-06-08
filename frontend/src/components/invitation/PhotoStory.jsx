@@ -80,7 +80,7 @@ export default function PhotoStory({ photos = [] }) {
     return (
         <section ref={sceneRef} className="invite-scene photo-story-scene">
             <p ref={titleRef} className="photo-story-title">
-                Our Story
+                Moments That Define Us
             </p>
 
             <div className="photo-story-stage">

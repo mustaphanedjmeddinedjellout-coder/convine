@@ -4,12 +4,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Location({ venue, venueAddress }) {
+export default function Location({ venue, venueAddress, googleMapsUrl }) {
     const sceneRef = useRef(null);
     const contentRef = useRef(null);
 
     const mapsQuery = encodeURIComponent(venueAddress || venue || '');
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
+    const mapsUrl = googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -86,7 +86,7 @@ export default function Location({ venue, venueAddress }) {
                     </svg>
                 </div>
 
-                <p className="location-title">The Venue</p>
+                <p className="location-title">Where We Celebrate</p>
                 <h2 className="location-venue">{venue || 'Venue TBA'}</h2>
                 {venueAddress && <p className="location-address">{venueAddress}</p>}
 

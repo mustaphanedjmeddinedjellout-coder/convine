@@ -6,15 +6,27 @@ import { api } from '../lib/api';
 export default function AdminDashboard() {
     const { user, logout } = useAuth();
     const [weddings, setWeddings] = useState([]);
+    const [summary, setSummary] = useState({ accepted: 0, refused: 0, pending: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
         api.adminWeddings()
-            .then((data) => setWeddings(data.weddings))
+            .then((data) => {
+                setWeddings(data.weddings);
+                setSummary(data.summary ?? { accepted: 0, refused: 0, pending: 0 });
+            })
             .catch((err) => setError(err.message))
             .finally(() => setLoading(false));
     }, []);
+
+    const invitations = weddings.flatMap((wedding) =>
+        (wedding.invitations ?? []).map((invitation) => ({
+            ...invitation,
+            weddingTitle: wedding.title,
+            weddingOwner: wedding.owner?.name,
+        })),
+    );
 
     return (
         <div className="min-h-screen bg-[#f7f7f5] text-black">
@@ -37,8 +49,23 @@ export default function AdminDashboard() {
 
             <main className="mx-auto max-w-6xl px-6 py-10">
                 <p className="max-w-2xl text-base leading-7 text-black/60">
-                    You see every customer wedding here. Customers only see and edit their own invitation — they never get admin access.
+                    This dashboard tracks invitation responses across all customer weddings. Customers still only edit their own invitation.
                 </p>
+
+                <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                    <div className="border border-black/10 bg-white p-5">
+                        <p className="text-sm uppercase tracking-wider text-black/40">Accepted</p>
+                        <p className="mt-2 text-3xl font-semibold text-[#0f7a44]">{summary.accepted}</p>
+                    </div>
+                    <div className="border border-black/10 bg-white p-5">
+                        <p className="text-sm uppercase tracking-wider text-black/40">Refused</p>
+                        <p className="mt-2 text-3xl font-semibold text-[#8a2e2e]">{summary.refused}</p>
+                    </div>
+                    <div className="border border-black/10 bg-white p-5">
+                        <p className="text-sm uppercase tracking-wider text-black/40">Pending</p>
+                        <p className="mt-2 text-3xl font-semibold text-[#6b5d4d]">{summary.pending}</p>
+                    </div>
+                </div>
 
                 {loading ? <p className="mt-8 text-black/50">Loading invitations...</p> : null}
                 {error ? <p className="mt-8 text-red-600">{error}</p> : null}
@@ -48,32 +75,43 @@ export default function AdminDashboard() {
                         <table className="w-full text-left text-sm">
                             <thead className="border-b border-black/10 bg-[#fafaf8] text-sm text-[#6b5d4d]">
                                 <tr>
+                                    <th className="px-5 py-4">Invitation</th>
                                     <th className="px-5 py-4">Wedding</th>
-                                    <th className="px-5 py-4">Customer</th>
-                                    <th className="px-5 py-4">Guests</th>
                                     <th className="px-5 py-4">Status</th>
+                                    <th className="px-5 py-4">Link</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {weddings.length === 0 ? (
+                                {invitations.length === 0 ? (
                                     <tr>
                                         <td className="px-5 py-8 text-black/50" colSpan={4}>
-                                            No customer accounts yet. Create one after a customer pays and picks a template.
+                                            No invitations yet.
                                         </td>
                                     </tr>
                                 ) : (
-                                    weddings.map((wedding) => (
-                                        <tr key={wedding.id} className="border-t border-black/5">
+                                    invitations.map((invitation) => (
+                                        <tr key={invitation.id} className="border-t border-black/5">
                                             <td className="px-5 py-4">
-                                                <p className="font-semibold">{wedding.title}</p>
-                                                <p className="mt-1 text-black/50">{wedding.template_slug}</p>
+                                                <p className="font-semibold">{invitation.name}</p>
+                                                <p className="mt-1 text-black/50">{invitation.weddingOwner}</p>
                                             </td>
                                             <td className="px-5 py-4">
-                                                <p>{wedding.owner.name}</p>
-                                                <p className="mt-1 text-black/50">{wedding.owner.email}</p>
+                                                <p>{invitation.weddingTitle}</p>
                                             </td>
-                                            <td className="px-5 py-4">{wedding.guest_count}</td>
-                                            <td className="px-5 py-4 capitalize">{wedding.status}</td>
+                                            <td className="px-5 py-4 capitalize">
+                                                <span className="rounded-full bg-[#fafaf8] px-3 py-1 text-xs font-semibold tracking-wider">
+                                                    {invitation.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-5 py-4">
+                                                {invitation.invite_url ? (
+                                                    <a className="text-[#0065c8] hover:underline" href={invitation.invite_url} target="_blank" rel="noreferrer">
+                                                        Open
+                                                    </a>
+                                                ) : (
+                                                    <span className="text-black/40">No link</span>
+                                                )}
+                                            </td>
                                         </tr>
                                     ))
                                 )}

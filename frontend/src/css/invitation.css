@@ -193,6 +193,7 @@ html.invitation-active.invitation-locked body {
     justify-content: center;
     padding: 4rem 1.5rem;
     text-align: center;
+    overflow: hidden;
 }
 
 .invite-scene--compact {
@@ -664,8 +665,9 @@ html.invitation-active.invitation-locked body {
 
 .photo-story-scene {
     min-height: auto;
-    padding-block: 6rem 4rem;
+    padding-block: 5rem 4rem;
     background: var(--color-ivory);
+    overflow: visible;
 }
 
 .photo-story-title {
@@ -858,7 +860,17 @@ html.invitation-active.invitation-locked body {
     font-family: var(--font-display);
     font-size: clamp(2rem, 8vw, 3rem);
     color: var(--color-ink);
+    margin-bottom: 0.5rem;
+}
+
+.rsvp-subtitle {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--color-ink);
+    opacity: 0.55;
     margin-bottom: 2rem;
+    letter-spacing: 0.05em;
 }
 
 .rsvp-buttons {
@@ -1497,3 +1509,675 @@ html.invitation-active.invitation-locked body {
     background: #c9a962;
 }
 
+/* ────────────────────────────────────────────────────────────────── */
+/*  CEREMONY SCHEDULE TIMELINE                                        */
+/* ────────────────────────────────────────────────────────────────── */
+
+.schedule-scene {
+    background: transparent !important;
+    padding-block: 4rem 3rem;
+    min-height: auto;
+    overflow: visible;
+}
+
+.schedule-title {
+    font-family: var(--font-serif);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--color-rose);
+    margin-bottom: 3rem;
+}
+
+.schedule-timeline {
+    position: relative;
+    width: min(100%, 400px);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-block: 1rem;
+}
+
+/* Vertical connecting line */
+.schedule-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, var(--color-gold), var(--color-gold), transparent);
+    transform-origin: top center;
+    opacity: 0.4;
+}
+
+.schedule-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    padding: 1.25rem 0;
+}
+
+.schedule-item--left {
+    flex-direction: row;
+    padding-right: calc(50% + 24px);
+    justify-content: flex-end;
+    text-align: right;
+}
+
+.schedule-item--right {
+    flex-direction: row-reverse;
+    padding-left: calc(50% + 24px);
+    justify-content: flex-end;
+    text-align: left;
+}
+
+/* Timeline dot on the center line */
+.schedule-dot {
+    position: absolute;
+    left: 50%;
+    top: 1.5rem;
+    transform: translateX(-50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-gold);
+    background: var(--color-ivory);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.schedule-dot-inner {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-gold);
+}
+
+/* Event card */
+.schedule-card {
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(201, 169, 98, 0.15);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+    max-width: 180px;
+    transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.schedule-card:hover {
+    border-color: rgba(201, 169, 98, 0.35);
+    box-shadow: 0 12px 32px rgba(201, 169, 98, 0.12);
+}
+
+.schedule-card-icon {
+    color: var(--color-gold);
+    margin-bottom: 0.5rem;
+    opacity: 0.8;
+}
+
+.schedule-card-time {
+    font-family: var(--font-serif);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+.schedule-card-title {
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin: 0 0 0.25rem;
+    line-height: 1.3;
+}
+
+.schedule-card-desc {
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    color: var(--color-ink);
+    opacity: 0.6;
+    line-height: 1.45;
+    margin: 0;
+}
+
+/* Mobile: single-column layout */
+@media (max-width: 480px) {
+    .schedule-item--left,
+    .schedule-item--right {
+        padding-left: 36px;
+        padding-right: 0;
+        flex-direction: row;
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .schedule-line {
+        left: 12px;
+    }
+
+    .schedule-dot {
+        left: 12px;
+    }
+
+    .schedule-card {
+        max-width: none;
+    }
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+/*  DRESS CODE                                                        */
+/* ────────────────────────────────────────────────────────────────── */
+
+.dresscode-scene {
+    min-height: auto !important;
+    padding-block: 3rem;
+}
+
+.dresscode-card {
+    width: min(100%, 380px);
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(201, 169, 98, 0.18);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.dresscode-card:hover {
+    border-color: rgba(201, 169, 98, 0.35);
+    box-shadow: 0 20px 50px rgba(201, 169, 98, 0.12);
+}
+
+.dresscode-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.25rem;
+    color: var(--color-gold);
+    opacity: 0.85;
+}
+
+.dresscode-tier {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--color-ink);
+    margin: 0 0 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+.dresscode-description {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--color-ink);
+    opacity: 0.7;
+    margin: 0;
+}
+
+.dresscode-colors-section {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(201, 169, 98, 0.15);
+}
+
+.dresscode-colors-label {
+    font-family: var(--font-serif);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    margin-bottom: 1rem;
+}
+
+.dresscode-colors {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.dresscode-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: default;
+}
+
+.dresscode-swatch:hover {
+    transform: scale(1.15);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.18);
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+/*  ADD TO CALENDAR                                                   */
+/* ────────────────────────────────────────────────────────────────── */
+
+.calendar-scene {
+    min-height: auto !important;
+    padding-block: 2rem;
+    background: transparent !important;
+}
+
+.calendar-card {
+    width: min(100%, 380px);
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.38);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(201, 169, 98, 0.16);
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.03);
+    text-align: center;
+    margin: 0 auto;
+}
+
+.calendar-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    color: var(--color-gold);
+    opacity: 0.8;
+    animation: pin-float 4s infinite ease-in-out;
+}
+
+.calendar-title {
+    font-family: var(--font-serif);
+    font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--color-rose);
+    margin: 0 0 0.5rem;
+}
+
+.calendar-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-ink);
+    opacity: 0.6;
+    margin: 0 0 1.75rem;
+    line-height: 1.5;
+}
+
+.calendar-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.calendar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.5rem;
+    font-family: var(--font-serif);
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border: 1px solid var(--color-gold);
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.calendar-btn:hover {
+    background: var(--color-gold);
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(201, 169, 98, 0.25);
+}
+
+.calendar-btn--google {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-ivory);
+}
+
+.calendar-btn--google:hover {
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    color: #fff;
+}
+
+.calendar-btn svg {
+    flex-shrink: 0;
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+/*  INVITATION FOOTER                                                 */
+/* ────────────────────────────────────────────────────────────────── */
+
+.invitation-footer {
+    position: relative;
+    z-index: 2;
+    padding: 4rem 1.5rem 3rem;
+    text-align: center;
+}
+
+.invitation-footer__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.invitation-footer__ornament {
+    color: var(--color-gold);
+    opacity: 0.6;
+    margin-bottom: 0.5rem;
+}
+
+.invitation-footer__monogram {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--color-ink);
+}
+
+.invitation-footer__monogram-amp {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--color-gold);
+    opacity: 0.7;
+}
+
+.invitation-footer__thanks {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--color-ink);
+    opacity: 0.55;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.invitation-footer__brand {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(201, 169, 98, 0.12);
+    width: min(80%, 200px);
+}
+
+.invitation-footer__brand-text {
+    font-family: var(--font-serif);
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--color-ink);
+    opacity: 0.35;
+    margin: 0;
+}
+
+.invitation-footer__heart {
+    color: var(--color-rose);
+    font-size: 0.8rem;
+}
+
+.invitation-footer__brand-name {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+    opacity: 0.45;
+    margin: 0.25rem 0 0;
+}
+
+/* ────────────────────────────────────────────────────────────────── */
+/*  ENHANCED VELVET DETAILS & POLISH                                  */
+/* ────────────────────────────────────────────────────────────────── */
+
+/* Velvet invitation subtle background texture overlay */
+.velvet-invitation::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 20% 15%, rgba(107, 15, 26, 0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 85%, rgba(201, 169, 98, 0.06) 0%, transparent 45%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Make all velvet sections sit above the background overlay */
+.velvet-invitation .invitation-story {
+    position: relative;
+    z-index: 2;
+}
+
+/* Enhanced letter frame hover glow for velvet */
+.velvet-invitation .letter-frame:hover {
+    box-shadow:
+        0 28px 70px rgb(42 31 20 / 16%),
+        inset 0 0 0 1px rgb(201 169 98 / 45%),
+        0 0 40px rgba(201, 169, 98, 0.06);
+}
+
+/* Velvet countdown glow pulse */
+.velvet-invitation .countdown-glow {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.65) 0%, rgba(250, 246, 240, 0.3) 70%, transparent 100%);
+    border: 1px solid rgba(201, 169, 98, 0.25);
+    transition: box-shadow 0.6s ease, border-color 0.6s ease;
+}
+
+.velvet-invitation .countdown-glow:hover {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 20px rgba(201, 169, 98, 0.15);
+}
+
+/* Enhanced location card for velvet */
+.velvet-invitation .location-glow {
+    background: rgba(255, 255, 255, 0.42);
+    border-color: rgba(201, 169, 98, 0.22);
+}
+
+.velvet-invitation .location-glow:hover {
+    border-color: var(--color-gold);
+    box-shadow: 0 24px 56px rgba(201, 169, 98, 0.14);
+}
+
+/* Velvet RSVP button enhanced styling */
+.velvet-invitation .rsvp-btn {
+    border-radius: 2px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.velvet-invitation .rsvp-btn--primary {
+    background: linear-gradient(135deg, var(--color-ink), #3d2e20);
+    border-color: var(--color-ink);
+    box-shadow: 0 4px 16px rgba(42, 31, 20, 0.2);
+}
+
+.velvet-invitation .rsvp-btn--primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+    border-color: var(--color-gold);
+    color: var(--color-ink);
+    box-shadow: 0 6px 24px rgba(201, 169, 98, 0.3);
+    transform: translateY(-2px);
+}
+
+.velvet-invitation .rsvp-btn:not(.rsvp-btn--primary):hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(201, 169, 98, 0.15);
+}
+
+/* Velvet photo glow enhanced */
+.velvet-invitation .photo-story-item.photo-glow {
+    border-color: rgba(201, 169, 98, 0.18);
+    border-radius: 4px;
+}
+
+.velvet-invitation .photo-story-item.photo-glow:hover {
+    border-color: var(--color-gold);
+    box-shadow: 0 18px 48px rgba(201, 169, 98, 0.2);
+    transform: scale(1.02);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Velvet ornamental dividers enhanced glow */
+.velvet-invitation .ornamental-divider {
+    color: var(--color-gold);
+}
+
+/* Enhanced wax seal for velvet */
+.velvet-invitation .wax-seal {
+    filter: drop-shadow(0 6px 16px rgba(107, 15, 26, 0.2));
+    color: var(--color-velvet);
+}
+
+.velvet-invitation .wax-seal:hover {
+    transform: scale(1.08) rotate(4deg);
+    filter: drop-shadow(0 8px 20px rgba(107, 15, 26, 0.3));
+}
+
+/* Velvet schedule card overrides */
+.velvet-invitation .schedule-card {
+    background: rgba(255, 255, 255, 0.5);
+    border-color: rgba(201, 169, 98, 0.2);
+}
+
+.velvet-invitation .schedule-card:hover {
+    background: rgba(255, 255, 255, 0.65);
+}
+
+/* Velvet calendar card overrides */
+.velvet-invitation .calendar-card {
+    background: rgba(255, 255, 255, 0.42);
+}
+
+/* Velvet RSVP section enhanced spacing */
+.velvet-invitation .rsvp-scene {
+    padding-bottom: 3rem;
+}
+
+/* Smooth section transitions — use transform only for GSAP-animated items */
+.velvet-invitation .invite-scene {
+    will-change: transform, opacity;
+}
+
+/* ── Gold shimmer on section titles ── */
+.velvet-invitation .schedule-title,
+.velvet-invitation .countdown-title,
+.velvet-invitation .location-title,
+.velvet-invitation .photo-story-title,
+.velvet-invitation .time-label,
+.velvet-invitation .calendar-title,
+.velvet-invitation .rsvp-title {
+    background: linear-gradient(90deg, var(--color-rose) 0%, var(--color-gold) 50%, var(--color-rose) 100%);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: title-shimmer 8s infinite ease-in-out;
+}
+
+@keyframes title-shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ── Velvet: names scene transparent so particles show through ── */
+.velvet-invitation .names-scene {
+    background: transparent;
+}
+
+/* ── Velvet: smooth transitions on all interactive elements ── */
+.velvet-invitation .location-map-btn {
+    border-radius: 2px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.velvet-invitation .location-map-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(201, 169, 98, 0.25);
+}
+
+/* ── Velvet: date badge glassmorphism refinement ── */
+.velvet-invitation .date-badge {
+    background: rgba(255, 255, 255, 0.42);
+    border-color: rgba(201, 169, 98, 0.22);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Velvet: countdown unit hover micro-interaction ── */
+.velvet-invitation .countdown-unit {
+    transition: transform 0.3s ease;
+}
+
+.velvet-invitation .countdown-unit:hover {
+    transform: translateY(-3px);
+}
+
+/* ── Velvet: footer extra top margin for breathing room ── */
+.velvet-invitation .invitation-footer {
+    padding-top: 2rem;
+}
+
+/* ── Velvet: enhanced time display pill ── */
+.velvet-invitation .time-display {
+    background: rgba(255, 255, 255, 0.45);
+    border-color: rgba(201, 169, 98, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+/* ── Backdrop-filter fallback for older browsers ── */
+@supports not (backdrop-filter: blur(10px)) {
+    .schedule-card,
+    .calendar-card,
+    .location-glow,
+    .date-badge,
+    .time-display {
+        background: rgba(255, 255, 255, 0.85);
+    }
+}
+
+/* ── Velvet schedule mobile alignment fix ── */
+@media (max-width: 480px) {
+    .velvet-invitation .schedule-card {
+        padding: 0.85rem 1rem;
+    }
+
+    .velvet-invitation .schedule-card-icon svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .velvet-invitation .schedule-card-title {
+        font-size: 0.95rem;
+    }
+
+    .velvet-invitation .countdown-number {
+        font-size: clamp(2rem, 8vw, 3.5rem);
+    }
+
+    .velvet-invitation .countdown-glow {
+        width: clamp(62px, 15vw, 95px);
+        height: clamp(62px, 15vw, 95px);
+    }
+
+    .velvet-invitation .calendar-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .velvet-invitation .letter-frame {
+        padding: 2.5rem 1.5rem 2rem;
+    }
+}

@@ -28,7 +28,7 @@ export default function NoirInvitation({ data, isDemo, onRsvp }) {
                 <NoirLetter guestName={guest.name} bride={bride} groom={groom} message={wedding.message} />
                 <NoirPhotos photos={wedding.photos} />
                 <Countdown eventDate={wedding.event_date} eventTime={wedding.event_time} />
-                <Location venue={wedding.venue} venueAddress={wedding.venue_address} />
+                <Location venue={wedding.venue} venueAddress={wedding.venue_address} googleMapsUrl={wedding.google_maps_url} />
                 <RSVP guestName={guest.name} initialStatus={guest.rsvp_status} onSubmit={onRsvp} isDemo={isDemo} />
             </main>
         </div>

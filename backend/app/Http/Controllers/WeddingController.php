@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Wedding;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class WeddingController extends Controller
 {
@@ -35,13 +36,16 @@ class WeddingController extends Controller
             'event_time' => ['nullable', 'string', 'max:20'],
             'venue' => ['nullable', 'string', 'max:255'],
             'venue_address' => ['nullable', 'string', 'max:500'],
+            'google_maps_url' => ['nullable', 'url', 'max:2000'],
             'message' => ['nullable', 'string', 'max:5000'],
             'photos' => ['nullable', 'array', 'max:6'],
-            'photos.*' => ['nullable', 'string', 'max:2000'],
             'status' => ['sometimes', 'string', 'in:draft,ready,sent'],
         ]);
 
-        $wedding->update($data);
+        $wedding->update([
+            ...$data,
+            'photos' => $this->resolvePhotos($request),
+        ]);
 
         return response()->json([
             'wedding' => $this->formatWedding($wedding->fresh('guests')),
@@ -77,6 +81,7 @@ class WeddingController extends Controller
             'event_time' => $wedding->event_time,
             'venue' => $wedding->venue,
             'venue_address' => $wedding->venue_address,
+            'google_maps_url' => $wedding->google_maps_url,
             'template_slug' => $wedding->template_slug,
             'message' => $wedding->message,
             'photos' => $wedding->photos ?? [],
@@ -89,6 +94,37 @@ class WeddingController extends Controller
                 'rsvp_status' => $guest->rsvp_status,
                 'invite_url' => $guest->token ? '/invite/'.$guest->token : null,
             ])->values(),
+            'accepted_count' => $wedding->guests->where('rsvp_status', 'attending')->count(),
+            'refused_count' => $wedding->guests->where('rsvp_status', 'declined')->count(),
+            'pending_count' => $wedding->guests->whereNull('rsvp_status')->count(),
+            'invitations' => $wedding->guests->map(fn ($guest) => [
+                'id' => $guest->id,
+                'name' => $guest->name,
+                'token' => $guest->token,
+                'invite_url' => $guest->token ? '/invite/'.$guest->token : null,
+                'status' => $guest->rsvp_status ? ($guest->rsvp_status === 'attending' ? 'accepted' : ($guest->rsvp_status === 'declined' ? 'refused' : $guest->rsvp_status)) : 'pending',
+                'raw_status' => $guest->rsvp_status,
+            ])->values(),
         ];
+    }
+
+    private function resolvePhotos(Request $request): array
+    {
+        $existingPhotos = collect($request->input('photos', []))
+            ->filter(fn ($photo) => is_string($photo) && trim($photo) !== '')
+            ->values()
+            ->all();
+
+        $uploadedPhotos = collect($request->file('photos', []))
+            ->filter()
+            ->map(function ($photo) {
+                $path = $photo->storePublicly('weddings/photos', 'public');
+
+                return Storage::disk('public')->url($path);
+            })
+            ->values()
+            ->all();
+
+        return array_slice(array_values(array_filter(array_merge($existingPhotos, $uploadedPhotos))), 0, 6);
     }
 }

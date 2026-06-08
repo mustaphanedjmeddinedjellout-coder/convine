@@ -10,6 +10,7 @@ export const DEMO_INVITATION = {
         event_time: '19:00',
         venue: 'Grand Palace Hotel',
         venue_address: '12 Avenue des Roses, Paris, France',
+        google_maps_url: 'https://www.google.com/maps/search/?api=1&query=Grand+Palace+Hotel+Paris',
         message:
             'We are delighted to invite you to celebrate our wedding and share this special day with us.',
         photos: [
