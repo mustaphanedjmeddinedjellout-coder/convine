@@ -79,9 +79,9 @@ export default function AddToCalendar({ eventDate, eventTime, venue, venueAddres
         const ctx = gsap.context(() => {
             gsap.fromTo(
                 contentRef.current,
-                { opacity: 0, y: 30, scale: 0.96 },
+                { opacity: 0, y: 22 },
                 {
-                    opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'power3.out',
+                    opacity: 1, y: 0, duration: 1.4, ease: 'power3.out',
                     scrollTrigger: { trigger: sceneRef.current, start: 'top 80%' },
                 },
             );

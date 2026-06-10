@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useInvitationScroll } from '../../hooks/useInvitationScroll';
 import DrapeOpening from '../../components/invitation/DrapeOpening';
-import CoupleNames from '../../components/invitation/CoupleNames';
+import InvitationCard from '../../components/invitation/InvitationCard/InvitationCard';
 import DateReveal from '../../components/invitation/DateReveal';
 import WeddingTime from '../../components/invitation/WeddingTime';
 import InvitationLetter from '../../components/invitation/InvitationLetter';
@@ -9,7 +9,6 @@ import PhotoStory from '../../components/invitation/PhotoStory';
 import Countdown from '../../components/invitation/Countdown';
 import Location from '../../components/invitation/Location';
 import RSVP from '../../components/invitation/RSVP';
-import GoldenParticles from '../../components/invitation/GoldenParticles';
 import OrnamentalDivider from '../../components/invitation/OrnamentalDivider';
 import CeremonySchedule from '../../components/invitation/CeremonySchedule';
 import AddToCalendar from '../../components/invitation/AddToCalendar';
@@ -17,8 +16,9 @@ import InvitationFooter from '../../components/invitation/InvitationFooter';
 import '../../css/invitation.css';
 
 export default function VelvetInvitation({ data, isDemo, onRsvp }) {
-    const [startedOpening, setStartedOpening] = useState(false);
-    const [drapeOpen, setDrapeOpen] = useState(false);
+    const skipCurtain = typeof window !== 'undefined' && window.location.search.includes('skipCurtain');
+    const [startedOpening, setStartedOpening] = useState(skipCurtain);
+    const [drapeOpen, setDrapeOpen] = useState(skipCurtain);
     const { guest, wedding } = data;
 
     const bride = wedding.bride_name || 'Amina';
@@ -28,23 +28,21 @@ export default function VelvetInvitation({ data, isDemo, onRsvp }) {
 
     return (
         <div className="invitation-root velvet-invitation">
-            {/* Floating golden particles background */}
-            {startedOpening && <GoldenParticles />}
-
             {!drapeOpen && (
                 <DrapeOpening
                     onStart={() => setStartedOpening(true)}
                     onComplete={() => setDrapeOpen(true)}
-                    data={data}
                 />
             )}
 
             <main className={`invitation-story${startedOpening ? ' is-visible' : ''}`}>
-                {/* ── Section 1: Couple Names ── */}
-                <CoupleNames
-                    brideName={bride}
-                    groomName={groom}
-                    visible={startedOpening}
+                {/* ── Section 1: The Card ──
+                    Reveal begins the moment the guest touches the curtain,
+                    so the card is rising behind the parting drapes — one
+                    continuous gesture, no dead frame between scenes. */}
+                <InvitationCard
+                    revealed={startedOpening}
+                    data={data}
                 />
 
                 <OrnamentalDivider variant="diamond" />

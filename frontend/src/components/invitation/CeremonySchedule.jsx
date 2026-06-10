@@ -71,11 +71,12 @@ export default function CeremonySchedule({ schedule }) {
             /* Title entrance */
             gsap.fromTo(
                 titleRef.current,
-                { opacity: 0, y: 30 },
+                { opacity: 0, y: 22 },
                 {
                     opacity: 1,
                     y: 0,
-                    duration: 1,
+                    duration: 1.4,
+                    ease: 'power3.out',
                     scrollTrigger: { trigger: sceneRef.current, start: 'top 80%' },
                 },
             );
@@ -92,18 +93,18 @@ export default function CeremonySchedule({ schedule }) {
                 },
             );
 
-            /* Staggered item reveals */
+            /* Item reveals — a quiet drift toward the line, no flying */
             itemsRef.current.forEach((el, index) => {
                 if (!el) return;
                 const isLeft = index % 2 === 0;
                 gsap.fromTo(
                     el,
-                    { opacity: 0, x: isLeft ? -40 : 40, y: 20 },
+                    { opacity: 0, x: isLeft ? -14 : 14, y: 18 },
                     {
                         opacity: 1,
                         x: 0,
                         y: 0,
-                        duration: 1.2,
+                        duration: 1.4,
                         ease: 'power3.out',
                         scrollTrigger: { trigger: el, start: 'top 85%' },
                     },

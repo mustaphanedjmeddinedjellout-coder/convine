@@ -35,13 +35,13 @@ export default function DateReveal({ eventDate, visible }) {
                 );
             }
 
-            /* ── Date badge fades in with letter-spacing animation ── */
+            /* ── Date badge rests into place ── */
             if (badgeRef.current) {
                 tl.fromTo(
                     badgeRef.current,
-                    { opacity: 0, y: 20, letterSpacing: '0em' },
-                    { opacity: 1, y: 0, letterSpacing: '0.15em', duration: 1.2, ease: 'power2.out' },
-                    0.5,
+                    { opacity: 0, y: 22 },
+                    { opacity: 1, y: 0, duration: 1.4, ease: 'power3.out' },
+                    0.4,
                 );
             }
         }, wrapperRef);

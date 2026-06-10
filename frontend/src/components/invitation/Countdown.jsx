@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { getCountdownTarget } from '../../lib/formatWeddingDate';
+import GoldLine from '../shared/GoldLine';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -42,33 +43,27 @@ export default function Countdown({ eventDate, eventTime }) {
         ) {
             gsap.fromTo(
                 secondsRef.current,
-                { scale: 1.18, opacity: 0.7 },
-                { scale: 1, opacity: 1, duration: 0.45, ease: 'back.out(1.6)' },
+                { scale: 1.1, opacity: 0.65 },
+                { scale: 1, opacity: 1, duration: 0.5, ease: 'power2.out' },
             );
         }
         prevSecondsRef.current = remaining.seconds;
     }, [remaining.seconds]);
 
-    // Cinematic GSAP entrance — units fly in from below with rotation
+    // Slow, inevitable entrance — medallions rise and settle
     useEffect(() => {
         const ctx = gsap.context(() => {
-            gsap.fromTo(
-                unitsRef.current,
-                { opacity: 0, y: 70, scale: 0.8, rotationX: 45 },
-                {
-                    opacity: 1,
-                    y: 0,
-                    scale: 1,
-                    rotationX: 0,
-                    duration: 1.4,
-                    stagger: 0.18,
-                    ease: 'power4.out',
-                    scrollTrigger: {
-                        trigger: sceneRef.current,
-                        start: 'top 75%',
-                    },
+            gsap.from(unitsRef.current, {
+                opacity: 0,
+                y: 22,
+                duration: 1.4,
+                stagger: 0.15,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: sceneRef.current,
+                    start: 'top 75%',
                 },
-            );
+            });
         }, sceneRef);
 
         return () => ctx.revert();
@@ -83,45 +78,32 @@ export default function Countdown({ eventDate, eventTime }) {
 
     return (
         <section ref={sceneRef} className="invite-scene countdown-scene">
-            {/* Decorative ornament above the title */}
+            {/* Engraved rule above the title */}
             <div className="countdown-ornament" aria-hidden="true">
-                <svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M60 4C45 4 38 16 20 16C14 16 8 14 2 10" stroke="var(--gold, #d4a853)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                    <path d="M60 4C75 4 82 16 100 16C106 16 112 14 118 10" stroke="var(--gold, #d4a853)" strokeWidth="1.2" strokeLinecap="round" fill="none" />
-                    <circle cx="60" cy="4" r="3" fill="var(--gold, #d4a853)" />
-                    <circle cx="2" cy="10" r="1.5" fill="var(--gold-light, #e8c97a)" />
-                    <circle cx="118" cy="10" r="1.5" fill="var(--gold-light, #e8c97a)" />
-                    <path d="M50 28L60 20L70 28" stroke="var(--gold-light, #e8c97a)" strokeWidth="1" strokeLinecap="round" fill="none" />
-                </svg>
+                <GoldLine width={120} />
             </div>
 
-            <p className="countdown-title">Until We Say I Do</p>
+            <p className="countdown-title label">Until We Say I Do</p>
 
             <div className="countdown-grid">
                 {units.map((unit, index) => (
-                    <div key={unit.label} style={{ display: 'contents' }}>
-                        {/* Pulsing colon separator between units */}
-                        {index > 0 && (
-                            <span className="countdown-separator" aria-hidden="true">:</span>
-                        )}
-
-                        <div
-                            ref={(el) => {
-                                unitsRef.current[index] = el;
-                            }}
-                            className="countdown-unit"
-                        >
-                            {/* Radial gradient glow container */}
-                            <div className="countdown-glow">
-                                <span
-                                    className="countdown-number"
-                                    ref={unit.label === 'Seconds' ? secondsRef : null}
-                                >
-                                    {String(unit.value).padStart(2, '0')}
-                                </span>
-                            </div>
-                            <span className="countdown-label">{unit.label}</span>
+                    <div
+                        key={unit.label}
+                        ref={(el) => {
+                            unitsRef.current[index] = el;
+                        }}
+                        className="countdown-unit"
+                    >
+                        {/* Engraved medallion */}
+                        <div className="countdown-glow">
+                            <span
+                                className="countdown-number"
+                                ref={unit.label === 'Seconds' ? secondsRef : null}
+                            >
+                                {String(unit.value).padStart(2, '0')}
+                            </span>
                         </div>
+                        <span className="countdown-label label">{unit.label}</span>
                     </div>
                 ))}
             </div>

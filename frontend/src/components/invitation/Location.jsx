@@ -13,24 +13,14 @@ export default function Location({ venue, venueAddress, googleMapsUrl }) {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // Dramatic 3D tilt entrance that settles to flat
+            // Slow and inevitable — the card rests into place
             gsap.fromTo(
                 contentRef.current,
-                {
-                    opacity: 0,
-                    x: -40,
-                    rotationX: 12,
-                    rotationY: -8,
-                    scale: 0.92,
-                    transformPerspective: 800,
-                },
+                { opacity: 0, y: 22 },
                 {
                     opacity: 1,
-                    x: 0,
-                    rotationX: 0,
-                    rotationY: 0,
-                    scale: 1,
-                    duration: 1.6,
+                    y: 0,
+                    duration: 1.4,
                     ease: 'power3.out',
                     scrollTrigger: {
                         trigger: sceneRef.current,
@@ -39,24 +29,6 @@ export default function Location({ venue, venueAddress, googleMapsUrl }) {
                     },
                 },
             );
-
-            // Animate the location-glow border on viewport entry
-            const glowEl = contentRef.current;
-            if (glowEl) {
-                gsap.fromTo(
-                    glowEl,
-                    { '--glow-opacity': 0 },
-                    {
-                        '--glow-opacity': 1,
-                        duration: 2,
-                        ease: 'power1.inOut',
-                        scrollTrigger: {
-                            trigger: sceneRef.current,
-                            start: 'top 75%',
-                        },
-                    },
-                );
-            }
         }, sceneRef);
 
         return () => ctx.revert();

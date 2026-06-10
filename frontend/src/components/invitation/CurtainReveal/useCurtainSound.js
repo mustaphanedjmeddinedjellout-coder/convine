@@ -1,70 +1,67 @@
 /**
- * useCurtainSound — Optional audio hook for curtain swish
+ * useCurtainSound — soft fabric whoosh for the curtain opening.
  *
- * Loads an MP3 from the textures folder (if present) and plays it
- * when triggered. Gracefully no-ops if the file is missing or
- * the browser blocks autoplay.
- *
- * Drop a CC0 "curtain whoosh" MP3 at:
- *   src/components/invitation/CurtainReveal/textures/curtain-whoosh.mp3
+ * Synthesized with WebAudio (filtered brown noise with a slow swell),
+ * so there is no audio asset to load and nothing to 404. Runs only on
+ * the user's tap — autoplay policies allow audio started by a gesture.
+ * Fails silently anywhere WebAudio is unavailable.
  */
 import { useRef, useCallback } from 'react';
 
+const DURATION = 2.6;
+
 export default function useCurtainSound() {
-  const audioRef = useRef(null);
-  const loadedRef = useRef(false);
-  const failedRef = useRef(false);
+  const playedRef = useRef(false);
 
   const play = useCallback(() => {
-    if (failedRef.current) return;
+    if (playedRef.current) return;
+    playedRef.current = true;
 
-    if (!audioRef.current) {
-      try {
-        // Attempt dynamic import of the sound file
-        const audio = new Audio();
-        // Use a relative path that Vite can resolve
-        // If the file doesn't exist the 'error' event fires and we bail
-        audio.src = new URL('./textures/curtain-whoosh.mp3', import.meta.url).href;
-        audio.volume = 0;
-        audio.preload = 'auto';
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      const ctx = new Ctx();
+      const rate = ctx.sampleRate;
+      const frames = Math.floor(DURATION * rate);
 
-        audio.addEventListener('canplaythrough', () => {
-          loadedRef.current = true;
-        }, { once: true });
-
-        audio.addEventListener('error', () => {
-          failedRef.current = true;
-        }, { once: true });
-
-        audioRef.current = audio;
-      } catch {
-        failedRef.current = true;
-        return;
+      // Brown noise — deeper and softer than white, reads as heavy cloth
+      const buffer = ctx.createBuffer(1, frames, rate);
+      const data = buffer.getChannelData(0);
+      let last = 0;
+      for (let i = 0; i < frames; i++) {
+        const white = Math.random() * 2 - 1;
+        last = (last + 0.02 * white) / 1.02;
+        data[i] = last * 3.5;
       }
+
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+
+      // Band-pass sweep follows the curtain: rises as it opens, falls as it settles
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.Q.value = 0.7;
+      const t0 = ctx.currentTime;
+      filter.frequency.setValueAtTime(280, t0);
+      filter.frequency.exponentialRampToValueAtTime(850, t0 + 1.1);
+      filter.frequency.exponentialRampToValueAtTime(220, t0 + DURATION);
+
+      // Gentle swell-and-fade envelope — never startles
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.exponentialRampToValueAtTime(0.16, t0 + 0.55);
+      gain.gain.exponentialRampToValueAtTime(0.04, t0 + 1.8);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + DURATION);
+
+      source.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      source.start(t0);
+      source.stop(t0 + DURATION);
+      source.onended = () => { ctx.close().catch(() => {}); };
+    } catch {
+      /* no audio — the reveal works fine in silence */
     }
-
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    // Ramp volume up for cinematic feel
-    audio.currentTime = 0;
-    audio.volume = 0;
-    audio.play().then(() => {
-      // Smooth volume ramp over 400ms
-      let vol = 0;
-      const ramp = setInterval(() => {
-        vol += 0.05;
-        if (vol >= 0.6) {
-          audio.volume = 0.6;
-          clearInterval(ramp);
-        } else {
-          audio.volume = vol;
-        }
-      }, 30);
-    }).catch(() => {
-      // Autoplay blocked — silently ignore
-      failedRef.current = true;
-    });
   }, []);
 
   return { play };

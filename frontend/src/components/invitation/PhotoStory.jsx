@@ -26,11 +26,12 @@ export default function PhotoStory({ photos = [] }) {
             // Title entrance
             gsap.fromTo(
                 titleRef.current,
-                { opacity: 0, y: 30 },
+                { opacity: 0, y: 22 },
                 {
                     opacity: 1,
                     y: 0,
-                    duration: 1,
+                    duration: 1.4,
+                    ease: 'power3.out',
                     scrollTrigger: {
                         trigger: sceneRef.current,
                         start: 'top 80%',
@@ -38,35 +39,27 @@ export default function PhotoStory({ photos = [] }) {
                 },
             );
 
-            // Staggered reveal alternating direction: even from left, odd from right
+            // Prints laid gently onto the table — a settle, not a fly-in
             itemsRef.current.forEach((el, index) => {
                 if (!el) {
                     return;
                 }
 
                 const isEven = index % 2 === 0;
-                const fromVars = {
-                    opacity: 0,
-                    x: isEven ? -80 : 80,
-                    y: 30,
-                    rotation: isEven ? -4 : 4,
-                    scale: 0.92,
-                };
 
                 gsap.fromTo(
                     el,
-                    fromVars,
+                    { opacity: 0, y: 26, rotation: isEven ? -1.5 : 1.5 },
                     {
                         opacity: 1,
-                        x: 0,
                         y: 0,
                         rotation: 0,
-                        scale: 1,
                         duration: 1.4,
                         ease: 'power3.out',
+                        delay: index * 0.08,
                         scrollTrigger: {
                             trigger: el,
-                            start: 'top 85%',
+                            start: 'top 88%',
                             toggleActions: 'play none none reverse',
                         },
                     },

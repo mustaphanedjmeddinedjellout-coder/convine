@@ -2,11 +2,13 @@
  * CurtainReveal — Main WebGL curtain scene
  *
  * Drop-in replacement for the old CSS-based DrapeOpening.
- * Same API: <CurtainReveal onComplete={fn} />
+ * Same API: <CurtainReveal onStart={fn} onComplete={fn} />
  *
- * Renders a full-viewport R3F canvas with two cloth-simulated
- * velvet curtain panels, a gold cornice, and an HTML invitation
- * overlay that fades in behind the curtain as it opens.
+ * Renders a full-viewport R3F canvas with two cloth-simulated velvet
+ * curtain panels. The scene background is transparent: as the panels
+ * part they reveal the real invitation page underneath — the card's
+ * own entrance is timed to begin while the curtains are still opening,
+ * so the hand-off is one continuous gesture with no double reveal.
  */
 import { useRef, useState, useCallback, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
@@ -78,23 +80,22 @@ function CurtainScene({ leftSimRef, rightSimRef }) {
 /*  Main component                                                     */
 /* ------------------------------------------------------------------ */
 
-export default function CurtainReveal({ onStart, onComplete, data }) {
+export default function CurtainReveal({ onStart, onComplete }) {
   const leftSimRef = useRef(null);
   const rightSimRef = useRef(null);
   const [isOpening, setIsOpening] = useState(false);
   const [isDone, setIsDone] = useState(false);
-  const [openProgress, setOpenProgress] = useState(0);
   const sceneRef = useRef(null);
   const reducedMotion = useReducedMotion();
   const { play: playCurtainSound } = useCurtainSound();
 
-  // GSAP timeline state holder
+  // GSAP timeline state holder — plain object, no React state per frame
   const curtainState = useMemo(() => ({ openProgress: 0, settleAmplitude: 1 }), []);
 
   const handleOpen = useCallback(() => {
     if (isOpening || isDone) return;
     setIsOpening(true);
-    onStart?.(); // Notify parent immediately so the main invitation becomes visible behind drapes
+    onStart?.(); // Parent reveals the invitation behind the parting drapes
     playCurtainSound();
 
     // ---- Reduced-motion fallback ----
@@ -108,7 +109,6 @@ export default function CurtainReveal({ onStart, onComplete, data }) {
           onComplete?.();
         },
       });
-      setOpenProgress(1);
       return;
     }
 
@@ -137,7 +137,6 @@ export default function CurtainReveal({ onStart, onComplete, data }) {
         const p = curtainState.openProgress;
         leftSimRef.current?.setOpenProgress(p);
         rightSimRef.current?.setOpenProgress(p);
-        setOpenProgress(p);
       },
     });
 
@@ -170,7 +169,7 @@ export default function CurtainReveal({ onStart, onComplete, data }) {
       onKeyDown={(e) => e.key === 'Enter' && handleOpen()}
       aria-label="Touch to open invitation"
     >
-      {/* WebGL canvas — transparent background reveals content behind */}
+      {/* WebGL canvas — transparent background reveals the page behind */}
       <Canvas
         className="curtain-reveal-canvas"
         dpr={Math.min(window.devicePixelRatio, 2)}
@@ -180,33 +179,6 @@ export default function CurtainReveal({ onStart, onComplete, data }) {
       >
         <CurtainScene leftSimRef={leftSimRef} rightSimRef={rightSimRef} />
       </Canvas>
-
-      {/* Invitation content visible behind the curtain as it opens */}
-      <div className="curtain-invitation-content">
-        <div className="curtain-invitation-inner">
-          <p className="curtain-eyebrow">Wedding Invitation</p>
-          <div className="curtain-names">
-            <span className="curtain-name">{data?.wedding?.bride_name || data?.brideName || 'Bride'}</span>
-            <span className="curtain-ampersand">&</span>
-            <span className="curtain-name">{data?.wedding?.groom_name || data?.groomName || 'Groom'}</span>
-          </div>
-          <div className="curtain-divider" aria-hidden="true">
-            <svg width="120" height="12" viewBox="0 0 120 12" fill="none">
-              <line x1="5" y1="6" x2="50" y2="6" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
-              <circle cx="60" cy="6" r="2" fill="currentColor" opacity="0.5" />
-              <line x1="70" y1="6" x2="115" y2="6" stroke="currentColor" strokeWidth="0.5" opacity="0.4" />
-            </svg>
-          </div>
-          {data?.wedding?.venue && (
-            <p className="curtain-details">{data.wedding.venue}</p>
-          )}
-          {data?.guest?.name && (
-            <p className="curtain-guest-line">
-              Dear {data.guest.name}, you are cordially invited
-            </p>
-          )}
-        </div>
-      </div>
 
       {/* Call-to-action overlay */}
       {!isOpening && (

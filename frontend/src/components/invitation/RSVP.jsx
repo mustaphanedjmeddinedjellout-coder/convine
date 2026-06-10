@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -47,11 +47,11 @@ export default function RSVP({ guestName, initialStatus, onSubmit, isDemo }) {
         const ctx = gsap.context(() => {
             gsap.fromTo(
                 contentRef.current,
-                { opacity: 0, y: 50 },
+                { opacity: 0, y: 22 },
                 {
                     opacity: 1,
                     y: 0,
-                    duration: 1.2,
+                    duration: 1.4,
                     ease: 'power3.out',
                     scrollTrigger: {
                         trigger: sceneRef.current,
